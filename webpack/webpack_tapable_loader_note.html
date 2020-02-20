@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1. Tapable</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <ul>
+<li><a href="#1-tapable">1. Tapable</a>
+<ul>
+<li><a href="#11-%e5%90%8c%e6%ad%a5synchook">1.1. 同步SyncHook</a>
+<ul>
+<li><a href="#111-synchook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.1.1. SyncHook模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#12-%e5%90%8c%e6%ad%a5syncbailhook">1.2. 同步SyncBailHook</a>
+<ul>
+<li><a href="#121-syncbailhook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.2.1. SyncBailHook模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#13-%e5%90%8c%e6%ad%a5syncwaterfallhook">1.3. 同步SyncWaterfallHook</a>
+<ul>
+<li><a href="#131-syncwaterfallhook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.3.1. SyncWaterFallHook模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#14-%e5%90%8c%e6%ad%a5syncloophook">1.4. 同步SyncLoopHook</a>
+<ul>
+<li><a href="#141-syncloophook%e7%9a%84%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.4.1. SyncLoopHook的模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#15-%e5%bc%82%e6%ad%a5%e5%b9%b6%e8%a1%8casyncparallelhook">1.5. 异步并行AsyncParallelHook</a>
+<ul>
+<li><a href="#151-%e5%bc%82%e6%ad%a5asyncparallelhook%e6%a8%a1%e6%8b%9f">1.5.1. 异步AsyncParallelHook模拟</a></li>
+<li><a href="#152-asyncparallelhook%e6%a8%a1%e6%8b%9f%e7%94%a8promise%e5%ae%9e%e7%8e%b0">1.5.2. AsyncParallelHook模拟用Promise实现</a></li>
+</ul>
+</li>
+<li><a href="#16-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieshook">1.6. 异步串行AsyncSeriesHook</a>
+<ul>
+<li><a href="#161-asyncserieshook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.6.1. AsyncSeriesHook模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#17-asyncserieshook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.7. AsyncSeriesHook用tapPromise实现</a>
+<ul>
+<li><a href="#171-asyncserieshook%e7%94%a8promise%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.7.1. AsyncSeriesHook用Promise模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#18-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncseriesbailhook">1.8. 异步串行AsyncSeriesBailHook</a>
+<ul>
+<li><a href="#181-asyncseriesbailhook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.8.1. AsyncSeriesBailHook用tapPromise实现</a></li>
+<li><a href="#182-asyncseriesbailhook%e7%94%a8promise%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.8.2. AsyncSeriesBailHook用Promise模拟实现</a></li>
+</ul>
+</li>
+<li><a href="#19-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook">1.9. 异步串行AsyncSeriesWaterfallHook</a>
+<ul>
+<li><a href="#191-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook%e6%a8%a1%e6%8b%9f">1.9.1. 异步串行AsyncSeriesWaterfallHook模拟</a></li>
+</ul>
+</li>
+<li><a href="#110-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.10. 异步串行AsyncSeriesWaterfallHook用tapPromise实现</a>
+<ul>
+<li><a href="#1101-asyncserieswaterfallhook%e7%94%a8promise%e5%ae%9e%e7%8e%b0">1.10.1. AsyncSeriesWaterfallHook用Promise实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-%e5%af%bc%e5%85%a5%e8%87%aa%e5%ae%9a%e4%b9%89loader">2. 导入自定义loader</a></li>
+<li><a href="#3-%e5%af%bc%e5%85%a5%e5%a4%9a%e4%b8%aaloader">3. 导入多个loader</a></li>
+<li><a href="#4-%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ae%9e%e7%8e%b0babel-loader">4. 自定义实现babel-loader</a></li>
+<li><a href="#5-%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ae%9e%e7%8e%b0banner-loader">5. 自定义实现banner-loader</a></li>
+<li><a href="#6-%e5%ae%9e%e7%8e%b0file-loader%e5%92%8curl-loader">6. 实现file-loader和url-loader</a></li>
+<li><a href="#7-%e5%ae%9e%e7%8e%b0less-loadercss-loaderstyle-loader">7. 实现less-loader,css-loader,style-loader</a></li>
+<li><a href="#8-plugins%e9%a1%ba%e5%ba%8f">8. Plugins顺序</a></li>
+<li><a href="#9-%e6%96%87%e4%bb%b6%e5%88%97%e8%a1%a8%e6%8f%92%e4%bb%b6%e7%94%9f%e6%88%90%e4%b8%80%e4%b8%aa%e6%96%87%e4%bb%b6%e6%8f%8f%e8%bf%b0%e6%89%93%e5%8c%85%e6%96%87%e4%bb%b6%e7%9a%84%e6%8f%92%e4%bb%b6">9. 文件列表插件:生成一个文件描述打包文件的插件</a></li>
+<li><a href="#10-%e5%86%85%e8%81%94%e7%9a%84webpack%e6%8f%92%e4%bb%b6">10. 内联的webpack插件</a></li>
+</ul>
+<h1 id="1-tapable">1. Tapable</h1>
+<p>webpack本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是Tapable，webpack中最核心的负责编译的Compiler和负责创建bundles的Compilation都是Tapable的实例。</p>
+<ul>
+<li>参考文章：<a href="https://segmentfault.com/a/1190000018385007">https://segmentfault.com/a/1190000018385007</a></li>
+</ul>
+<h2 id="11-%e5%90%8c%e6%ad%a5synchook">1.1. 同步SyncHook</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+  1. SyncHook
+*/</span>
+<span class="hljs-keyword">let</span> {SyncHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>(){
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> SyncHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+
+  tap(){ <span class="hljs-comment">// 注册监听函数</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'node'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>, name)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, name)
+    })
+  }
+
+  start(){ <span class="hljs-comment">// 启动钩子</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.call(<span class="hljs-string">'Olivia'</span>)
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap() <span class="hljs-comment">// 注册node react事件</span>
+l.start() <span class="hljs-comment">// 启动钩子</span>
+<span class="hljs-comment">/*
+ * result:
+ *  node Olivia 
+ *  react Olivia
+ * */</span> 
+</div></code></pre>
+<h3 id="111-synchook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.1.1. SyncHook模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * 模拟webpack的SyncHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncHook</span> </span>{ <span class="hljs-comment">// 钩子是同步的</span>
+  <span class="hljs-keyword">constructor</span>(args) {
+    <span class="hljs-keyword">this</span>.tasks = [] <span class="hljs-comment">// 保存任务的数组</span>
+  }
+  tap(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task) <span class="hljs-comment">// 将任务保存到数组</span>
+  }
+  call(...args) {
+    <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function">(<span class="hljs-params">task</span>) =&gt;</span> task(...args)) <span class="hljs-comment">// 执行每一个任务</span>
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> SyncHook([<span class="hljs-string">'name'</span>])
+
+hook.tap(<span class="hljs-string">'name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'name'</span>, name)
+})
+hook.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, name)
+})
+hook.call(<span class="hljs-string">'Olivia'</span>)
+</div></code></pre>
+<h2 id="12-%e5%90%8c%e6%ad%a5syncbailhook">1.2. 同步SyncBailHook</h2>
+<ul>
+<li>SyncBailHook： Bail保险，如果有一个tap()返回了一个非undefined的结果就停止</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+  2. SyncBailHook
+*/</span>
+<span class="hljs-keyword">let</span> {SyncBailHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>(){
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> SyncBailHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+
+  tap(){ <span class="hljs-comment">// 注册监听函数</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'node'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>, name)
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'想玩'</span>
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, name)
+    })
+  }
+
+  start(){ <span class="hljs-comment">// 启动钩子</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.call(<span class="hljs-string">'Olivia'</span>)
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap() <span class="hljs-comment">// 注册node react事件</span>
+l.start() <span class="hljs-comment">// 启动钩子</span>
+
+<span class="hljs-comment">/* result:
+ *  node Olivia 
+*/</span> 
+</div></code></pre>
+<h3 id="121-syncbailhook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.2.1. SyncBailHook模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * 模拟webpack的SyncBailHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncBailHook</span> </span>{ <span class="hljs-comment">// 钩子是同步的</span>
+  <span class="hljs-keyword">constructor</span>(args) {
+    <span class="hljs-keyword">this</span>.tasks = [] <span class="hljs-comment">// 保存任务的数组</span>
+  }
+  tap(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task) <span class="hljs-comment">// 将任务保存到数组</span>
+  }
+  call(...args) {
+    <span class="hljs-keyword">let</span> ret; <span class="hljs-comment">// 当前函数的返回值</span>
+    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span> <span class="hljs-comment">// 至少要执行一个</span>
+    <span class="hljs-keyword">do</span> {
+      ret = <span class="hljs-keyword">this</span>.tasks[index++](...args)
+    }<span class="hljs-keyword">while</span>(ret === <span class="hljs-literal">undefined</span> &amp;&amp; index &lt; <span class="hljs-keyword">this</span>.args.length) <span class="hljs-comment">// 遇到返回结果不为undefined且任务没执行完前，就停止</span>
+
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> SyncBailHook([<span class="hljs-string">'name'</span>])
+
+hook.tap(<span class="hljs-string">'name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'name'</span>, name)
+  <span class="hljs-keyword">return</span> <span class="hljs-string">"我累了停止向下执行"</span>
+})
+hook.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, name)
+})
+hook.call(<span class="hljs-string">'Olivia'</span>)
+</div></code></pre>
+<h2 id="13-%e5%90%8c%e6%ad%a5syncwaterfallhook">1.3. 同步SyncWaterfallHook</h2>
+<p>类似于 reduce，如果前一个 Hook 函数的结果 result !== undefined，则 result 会作为后一个 Hook 函数的第一个参数。</p>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+  3. SyncWaterfallHook： 类似于 reduce，如果前一个 Hook 函数的结果 result !== undefined，则 result 会作为后一个 Hook 函数的第一个参数。
+*/</span>
+<span class="hljs-keyword">let</span> {SyncWaterfallHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>(){
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> SyncWaterfallHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+
+  tap(){ <span class="hljs-comment">// 注册监听函数</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'node'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>, name)
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'nodeok'</span> <span class="hljs-comment">// 有返回值，因此作为下一个hook的参数</span>
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, data)
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'reactok'</span>
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tap(<span class="hljs-string">'vue'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'vue'</span>, data)
+    })
+  }
+
+  start(){ <span class="hljs-comment">// 启动钩子</span>
+    <span class="hljs-keyword">this</span>.hooks.arch.call(<span class="hljs-string">'Olivia'</span>)
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap() <span class="hljs-comment">// 注册node react事件</span>
+l.start() <span class="hljs-comment">// 启动钩子</span>
+<span class="hljs-comment">/* result: 
+ *  node Olivia
+    react nodeok
+    vue reactok
+ */</span> 
+</div></code></pre>
+<h3 id="131-syncwaterfallhook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.3.1. SyncWaterFallHook模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncWaterfallHook</span> </span>{ <span class="hljs-comment">// 钩子是同步的</span>
+  <span class="hljs-keyword">constructor</span>(args) {
+    <span class="hljs-keyword">this</span>.tasks = [] <span class="hljs-comment">// 保存任务的数组</span>
+  }
+  tap(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task) <span class="hljs-comment">// 将任务保存到数组</span>
+  }
+  call(...args) {
+    <span class="hljs-keyword">let</span> [first, ...others] = <span class="hljs-keyword">this</span>.tasks
+    <span class="hljs-keyword">let</span> ret = first(...args)
+    <span class="hljs-comment">// 将结果传递下去</span>
+    others.reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> {
+      <span class="hljs-keyword">return</span> b(a)
+    }, ret)
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> SyncWaterfallHook([<span class="hljs-string">'name'</span>])
+
+hook.tap(<span class="hljs-string">'node'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>, name)
+  <span class="hljs-keyword">return</span> <span class="hljs-string">"nodeok"</span>
+})
+hook.tap(<span class="hljs-string">'react'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, data)
+  <span class="hljs-keyword">return</span> <span class="hljs-string">"reactok"</span>
+})
+hook.tap(<span class="hljs-string">'vue'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'vue'</span>, data)
+})
+hook.call(<span class="hljs-string">'Olivia'</span>)
+</div></code></pre>
+<h2 id="14-%e5%90%8c%e6%ad%a5syncloophook">1.4. 同步SyncLoopHook</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+  3. SyncLoopHook： 不停的循环执行 Hook，直到所有函数结果 result === undefined。
+*/</span>
+<span class="hljs-keyword">const</span> { SyncLoopHook } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Hook</span></span>{
+    <span class="hljs-keyword">constructor</span>(){
+        <span class="hljs-comment">/** 定义一个index */</span>
+        <span class="hljs-keyword">this</span>.index = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">this</span>.hooks = <span class="hljs-keyword">new</span> SyncLoopHook([<span class="hljs-string">'name'</span>]);
+    }
+    tap(){
+        <span class="hljs-comment">/** 箭头函数 绑定this */</span>
+        <span class="hljs-keyword">this</span>.hooks.tap(<span class="hljs-string">'node'</span>,(name) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>,name);
+            <span class="hljs-comment">/** 当不满足条件时 会循环执行该函数 
+             * 返回值为udefined时 终止该循环执行
+            */</span>
+            <span class="hljs-keyword">return</span> ++<span class="hljs-keyword">this</span>.index === <span class="hljs-number">5</span>?<span class="hljs-literal">undefined</span>:<span class="hljs-string">'学完5遍node后再学react'</span>;
+        });
+        <span class="hljs-keyword">this</span>.hooks.tap(<span class="hljs-string">'react'</span>,(name) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>,name);
+        });
+    }
+    start(){
+        <span class="hljs-keyword">this</span>.hooks.call(<span class="hljs-string">'callend.'</span>);
+    }
+}
+
+<span class="hljs-keyword">let</span> h = <span class="hljs-keyword">new</span> Hook();
+
+h.tap();
+h.start();
+<span class="hljs-comment">/* result: 
+ *  node callend.
+    node callend.
+    node callend.
+    node callend.
+    node callend.
+    react callend.
+ */</span> 
+</div></code></pre>
+<h3 id="141-syncloophook%e7%9a%84%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.4.1. SyncLoopHook的模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+ * 模拟webpack的SyncLoopHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncLoopHook</span> </span>{ <span class="hljs-comment">// 钩子是同步的</span>
+  <span class="hljs-keyword">constructor</span>(args) {
+    <span class="hljs-keyword">this</span>.tasks = [] <span class="hljs-comment">// 保存任务的数组</span>
+  }
+  tap(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task) <span class="hljs-comment">// 将任务保存到数组</span>
+  }
+  call(...args) {
+   <span class="hljs-keyword">this</span>.tasks.forEach( <span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> { <span class="hljs-comment">// 遍历每一个tap,遇到返回的不是undefined就循环执行</span>
+     <span class="hljs-keyword">let</span> ret
+     <span class="hljs-keyword">do</span> {
+      ret = task(...args)
+     } <span class="hljs-keyword">while</span>( ret !== <span class="hljs-literal">undefined</span>)
+   })
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> SyncLoopHook([<span class="hljs-string">'name'</span>])
+<span class="hljs-keyword">let</span> total = <span class="hljs-number">0</span>
+hook.tap(<span class="hljs-string">'node'</span>, name =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'node'</span>, name)
+  <span class="hljs-keyword">return</span> ++total === <span class="hljs-number">5</span> ? <span class="hljs-literal">undefined</span> : <span class="hljs-string">'继续学'</span>
+})
+hook.tap(<span class="hljs-string">'react'</span>, name =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'react'</span>, name)
+})
+
+hook.call(<span class="hljs-string">'Olivia'</span>)
+</div></code></pre>
+<h2 id="15-%e5%bc%82%e6%ad%a5%e5%b9%b6%e8%a1%8casyncparallelhook">1.5. 异步并行AsyncParallelHook</h2>
+<ul>
+<li>异步的勾子分两种串行和并行</li>
+<li>并行等待所有并发的异步事件执行后执行回调</li>
+<li>webpack异步钩子：AsyncParallelHook,先执行完异步再执行同步</li>
+<li>tapable注册的三种方法:</li>
+</ul>
+<ol>
+<li>异步的注册方法tap</li>
+<li>异步的注册方法tapAsync， 还有个回调参数</li>
+<li>topPromise,注册promise</li>
+</ol>
+<ul>
+<li>tapable调用的三种</li>
+</ul>
+<ol>
+<li>call (同步)</li>
+<li>callAsync （异步）</li>
+<li>promise （异步）</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> {AsyncParallelHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>)
+<span class="hljs-comment">// 用tap实现</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span> () {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncParallelHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap () {
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'node'</span>, (name, cb) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+        cb()
+      }, <span class="hljs-number">1000</span>)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'vue'</span>, (name, cb) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+        cb()
+      }, <span class="hljs-number">1000</span>)
+    })
+  }
+  start () {
+    <span class="hljs-keyword">this</span>.hooks.arch.callAsync(<span class="hljs-string">'Olivia'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    })
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue Olivia
+ * end
+ */</span>
+</div></code></pre>
+<h3 id="151-%e5%bc%82%e6%ad%a5asyncparallelhook%e6%a8%a1%e6%8b%9f">1.5.1. 异步AsyncParallelHook模拟</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * webpack异步钩子模拟：AsyncParallelHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelHook</span> </span>{
+  <span class="hljs-keyword">constructor</span> (args) {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapAsync (name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callAsync (...args) {
+    <span class="hljs-keyword">let</span> finalCallBack = args.pop() <span class="hljs-comment">// 拿出最终的函数</span>
+    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span> <span class="hljs-comment">// 计数</span>
+    <span class="hljs-keyword">let</span> done = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-comment">// 类似Promise.all()方法</span>
+      <span class="hljs-comment">// 已经做到到最后一个任务了，就执行</span>
+      index++
+      <span class="hljs-keyword">if</span> (index === <span class="hljs-keyword">this</span>.tasks.length) {
+        finalCallBack()
+      }
+    }
+    <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> {
+      task(...args,done)
+    })
+    
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> AsyncParallelHook()
+hook.tapAsync(<span class="hljs-string">'node'</span>, (name, callback) =&gt; {
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+    callback()
+  }, <span class="hljs-number">1000</span>)
+})
+hook.tapAsync(<span class="hljs-string">'vue'</span>, (name, callback) =&gt; {
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+    callback()
+  }, <span class="hljs-number">1000</span>)
+})
+hook.callAsync(<span class="hljs-string">"Olivia"</span>, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h3 id="152-asyncparallelhook%e6%a8%a1%e6%8b%9f%e7%94%a8promise%e5%ae%9e%e7%8e%b0">1.5.2. AsyncParallelHook模拟用Promise实现</h3>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelHook</span> </span>{
+  <span class="hljs-keyword">constructor</span> (args) {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapPromise (name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callPromise (...args) {
+   <span class="hljs-keyword">let</span> taskArray = <span class="hljs-keyword">this</span>.tasks.map(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> task(...args)) <span class="hljs-comment">//将每个异步任务保存起来</span>
+    <span class="hljs-keyword">return</span>  <span class="hljs-built_in">Promise</span>.all(taskArray)
+  }
+}
+
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> AsyncParallelHook()
+hook.tapPromise(<span class="hljs-string">'node'</span>, name =&gt; {
+ <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+   setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+     resolve()
+   }, <span class="hljs-number">1000</span>)
+ })
+})
+hook.tapPromise(<span class="hljs-string">'vue'</span>, name =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+    resolve()
+  }, <span class="hljs-number">1000</span>)
+})
+hook.callPromise(<span class="hljs-string">"Olivia"</span>).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+}) 
+</div></code></pre>
+<h2 id="16-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieshook">1.6. 异步串行AsyncSeriesHook</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+* webpack异步钩子：AsyncSeriesHook
+*/</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'node'</span>, (name, callback) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+          callback() <span class="hljs-comment">// 需要callback，若是resolve()只是会执行第一个</span>
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'vue'</span>, (name, callback) =&gt; {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+          callback()
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.callAsync(<span class="hljs-string">'Olivia'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    })
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue Olivia
+ * end
+ */</span>
+</div></code></pre>
+<h3 id="161-asyncserieshook%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.6.1. AsyncSeriesHook模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * webpack异步钩子模拟：AsyncSeriesHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesHook</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapAsync(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callAsync(...args) {
+    <span class="hljs-keyword">const</span> lastCallback = args.pop() <span class="hljs-comment">// 先将最后一个任务存起来</span>
+    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">let</span> next = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-comment">// 上一个任务执行callback()就执行下一个任务</span>
+      <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.tasks.length === index) <span class="hljs-keyword">return</span>  lastCallback()
+      <span class="hljs-keyword">let</span> task = <span class="hljs-keyword">this</span>.tasks[index++]
+      task(...args, next) <span class="hljs-comment">// callback()传递下去</span>
+    }
+    next() <span class="hljs-comment">// 至少先执行一次</span>
+  }
+}
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> AsyncSeriesHook()
+hook.tapAsync(<span class="hljs-string">'node'</span>, (name, callback) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+      callback()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.tapAsync(<span class="hljs-string">'vue'</span>, (name, callback) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+      callback()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.callAsync(<span class="hljs-string">'Olivia'</span>,() =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h2 id="17-asyncserieshook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.7. AsyncSeriesHook用tapPromise实现</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+* webpack异步钩子：AsyncSeriesHook用tapPromise实现
+*/</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'node'</span>, (name) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+          resolve() <span class="hljs-comment">// 需要callback，若是resolve()只是会执行第一个</span>
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'vue'</span>, (name) =&gt; {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+          resolve()
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.promise(<span class="hljs-string">'Olivia'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    }) 
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue Olivia
+ * end
+ */</span>
+</div></code></pre>
+<h3 id="171-asyncserieshook%e7%94%a8promise%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.7.1. AsyncSeriesHook用Promise模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesHook</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapPromise(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callPromise(...args) { <span class="hljs-comment">// 异步串行Promise</span>
+    <span class="hljs-keyword">let</span> [first, ...others] = <span class="hljs-keyword">this</span>.tasks
+    <span class="hljs-keyword">return</span> others.reduce(<span class="hljs-function">(<span class="hljs-params">other, next</span>)=&gt;</span>{
+      <span class="hljs-keyword">return</span> other.then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> next(...args)) <span class="hljs-comment">// 上一个task成功resolve后才执行下一个</span>
+    }, first(...args))
+  }
+}
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> AsyncSeriesHook()
+hook.tapPromise(<span class="hljs-string">'node'</span>, (name) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+      resovle()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.tapPromise(<span class="hljs-string">'vue'</span>, (name) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+      resovle()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.callPromise(<span class="hljs-string">'Olivia'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h2 id="18-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncseriesbailhook">1.8. 异步串行AsyncSeriesBailHook</h2>
+<ul>
+<li>非null（错误的原因）就会停止向下执行，可以在callAsync()里接收错误</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+* webpack异步钩子：AsyncSeriesBailHook,callback返回
+    非null（错误的原因）就会停止向下执行，可以在callAsync()里接收错误
+*/</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesBailHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesBailHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'node'</span>, (name, callback) =&gt; { 
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+        callback()
+      }, <span class="hljs-number">1000</span>)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'vue'</span>, (name, callback) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+        callback(<span class="hljs-string">'错误，停止学'</span>)
+      }, <span class="hljs-number">1000</span>)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'react'</span>, (name, callback) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"react"</span>, name)
+        callback()
+      }, <span class="hljs-number">1000</span>)
+    })
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.callAsync(<span class="hljs-string">'Olivia'</span>, (err)=&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>, err)
+    })
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue Olivia
+ * err 错误，停止学
+ * // 并没有继续向下执行
+ */</span>
+</div></code></pre>
+<h3 id="181-asyncseriesbailhook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.8.1. AsyncSeriesBailHook用tapPromise实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+* webpack异步钩子：AsyncSeriesBailHook用tapPromise
+*/</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesBailHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesBailHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'node'</span>, (name) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+          resolve()
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'vue'</span>, (name) =&gt; {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+          reject(<span class="hljs-string">'错误，停止学'</span>)
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'react'</span>, (name) =&gt; {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"react"</span>, name)
+          resolve()
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.promise(<span class="hljs-string">'Olivia'</span>)
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    }).catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"err"</span>, err)
+    })
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue Olivia
+ * err 错误，停止学
+ * // 并没有继续向下执行
+ */</span>
+</div></code></pre>
+<h3 id="182-asyncseriesbailhook%e7%94%a8promise%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1.8.2. AsyncSeriesBailHook用Promise模拟实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * webpack异步钩子模拟：AsyncSeriesBailHook用Promise实现
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesBailHook</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapPromise(name, task) {
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callPromise(...args) { <span class="hljs-comment">// 异步串行Promise</span>
+    <span class="hljs-keyword">let</span> [first, ...others] = <span class="hljs-keyword">this</span>.tasks
+    <span class="hljs-keyword">return</span> others.reduce(<span class="hljs-function">(<span class="hljs-params">other, next</span>)=&gt;</span>{
+      <span class="hljs-keyword">return</span> other.then( <span class="hljs-comment">// 上一个task成功resolve后才执行下一个</span>
+        () =&gt; next(...args))
+        .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-comment">// 遇到错误停止继续执行</span>
+          {
+            <span class="hljs-built_in">console</span>.log(err,<span class="hljs-string">"结束"</span>)
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {})}) 
+    }, first(...args))
+  }
+}
+<span class="hljs-keyword">let</span> hook = <span class="hljs-keyword">new</span> AsyncSeriesBailHook()
+hook.tapPromise(<span class="hljs-string">'node'</span>, (name) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+      resovle()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.tapPromise(<span class="hljs-string">'vue'</span>, (name) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, name)
+      reject(<span class="hljs-string">"error停止"</span>)
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.tapPromise(<span class="hljs-string">'react'</span>, (name) =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resovle, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"react"</span>, name)
+      resovle()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.callPromise(<span class="hljs-string">'Olivia'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h2 id="19-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook">1.9. 异步串行AsyncSeriesWaterfallHook</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">// /*</span>
+<span class="hljs-comment">// * webpack异步钩子：AsyncSeriesWaterfallHook</span>
+<span class="hljs-comment">// */</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesWaterfallHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'node'</span>, (name, callback) =&gt; { 
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+          callback(<span class="hljs-literal">null</span>, <span class="hljs-string">"node传递下去"</span>) 
+        }, <span class="hljs-number">1000</span>)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'vue'</span>, (data, callback) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, data)
+        <span class="hljs-comment">// callback(null, "vue传递下去") // 1</span>
+        callback(<span class="hljs-string">'errorok'</span>, <span class="hljs-string">"vue传递下去"</span>) <span class="hljs-comment">// 2</span>
+      }, <span class="hljs-number">1000</span>)
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapAsync(<span class="hljs-string">'jquery'</span>, (data, callback) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"jquery"</span>, data)
+        callback()
+      }, <span class="hljs-number">1000</span>)
+    })
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.callAsync(<span class="hljs-string">'Olivia'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    }) 
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**情况1
+ * node Olivia
+ * vue node传递下去
+ * jquery vue传递下去
+ * end
+ * 情况2
+ * node Olivia
+ * vue node传递下去
+ * end
+ * 并没有执行jquery
+ */</span>
+</div></code></pre>
+<h3 id="191-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook%e6%a8%a1%e6%8b%9f">1.9.1. 异步串行AsyncSeriesWaterfallHook模拟</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * webpack异步钩子模拟：AsyncSeriesWaterfallHook
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesWaterfallHook</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapAsync(name, task){
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callAsync(...args){
+    <span class="hljs-keyword">let</span> finalCallBack =args.pop()
+    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span> 
+    <span class="hljs-keyword">let</span> next = <span class="hljs-function">(<span class="hljs-params">err, data</span>) =&gt;</span> {
+      <span class="hljs-keyword">let</span> task = <span class="hljs-keyword">this</span>.tasks[index]
+      <span class="hljs-keyword">if</span>(!task) <span class="hljs-keyword">return</span> finalCallBack() <span class="hljs-comment">// 执行完所有任务了</span>
+      <span class="hljs-keyword">if</span> (index === <span class="hljs-number">0</span>) { <span class="hljs-comment">// 区分传递的是data还是name</span>
+        task(...args, next) <span class="hljs-comment">// 第一个任务是没有data</span>
+      }<span class="hljs-keyword">else</span> {
+        task(data, next)
+      }
+      index++
+    }
+    next()
+  }
+}
+<span class="hljs-keyword">let</span>  hook = <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook()
+hook.tapAsync(<span class="hljs-string">"node"</span>, (name, callback) =&gt;{
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+      callback(<span class="hljs-literal">null</span>, <span class="hljs-string">"传递下去"</span>)
+    }, <span class="hljs-number">1000</span>)
+})
+hook.tapAsync(<span class="hljs-string">"vue"</span>, (data, callback) =&gt;{
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, data)
+      callback(<span class="hljs-literal">null</span>)
+    }, <span class="hljs-number">1000</span>)
+})
+hook.callAsync(<span class="hljs-string">"Olivia"</span>, ()=&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h2 id="110-%e5%bc%82%e6%ad%a5%e4%b8%b2%e8%a1%8casyncserieswaterfallhook%e7%94%a8tappromise%e5%ae%9e%e7%8e%b0">1.10. 异步串行AsyncSeriesWaterfallHook用tapPromise实现</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">/*
+* webpack异步钩子：AsyncSeriesWaterfallHook的Promise实现
+*/</span>
+<span class="hljs-keyword">const</span> {AsyncSeriesWaterfallHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lesson</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.hooks = {
+      <span class="hljs-attr">arch</span>: <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook([<span class="hljs-string">'name'</span>])
+    }
+  }
+  tap(){
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'node'</span>, (name) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+          resolve(<span class="hljs-string">"node传递下去"</span>) 
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'vue'</span>, (data) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, data)
+          resolve(<span class="hljs-string">"vue传递下去"</span>) 
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    <span class="hljs-keyword">this</span>.hooks.arch.tapPromise(<span class="hljs-string">'react'</span>, (data) =&gt; { 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"react"</span>, data)
+          resolve()
+        }, <span class="hljs-number">1000</span>)
+      })
+    })
+    
+  }
+  start(){
+    <span class="hljs-keyword">this</span>.hooks.arch.promise(<span class="hljs-string">'Olivia'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+    }) 
+  }
+}
+<span class="hljs-keyword">let</span> l = <span class="hljs-keyword">new</span> Lesson()
+l.tap()
+l.start()
+<span class="hljs-comment">/**
+ * node Olivia
+ * vue node传递下去
+ * react vue传递下去
+ * end
+ */</span>
+</div></code></pre>
+<h3 id="1101-asyncserieswaterfallhook%e7%94%a8promise%e5%ae%9e%e7%8e%b0">1.10.1. AsyncSeriesWaterfallHook用Promise实现</h3>
+<pre><code class="language-js"><div><span class="hljs-comment">/**
+ * webpack异步钩子模拟：AsyncSeriesWaterfallHook用Promise实现
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesWaterfallHook</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.tasks = []
+  }
+  tapPromise(name, task){
+    <span class="hljs-keyword">this</span>.tasks.push(task)
+  }
+  callPromise(...args){
+    <span class="hljs-keyword">let</span> [first, ...others] = <span class="hljs-keyword">this</span>.tasks
+    <span class="hljs-keyword">return</span> others.reduce(<span class="hljs-function">(<span class="hljs-params">other, next</span>)=&gt;</span> {
+      <span class="hljs-keyword">return</span> other.then(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {
+        <span class="hljs-keyword">return</span> data ? next(data) :  next(...args)
+      })
+    }, first(...args))
+  }
+}
+<span class="hljs-keyword">let</span>  hook = <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook()
+hook.tapPromise(<span class="hljs-string">"node"</span>, (name) =&gt;{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node"</span>, name)
+      resolve(<span class="hljs-string">"传递下去"</span>)
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.tapPromise(<span class="hljs-string">"vue"</span>, (data) =&gt;{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"vue"</span>, data)
+      resolve()
+    }, <span class="hljs-number">1000</span>)
+  })
+})
+hook.callPromise(<span class="hljs-string">"Olivia"</span>).then(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"end"</span>)
+})
+</div></code></pre>
+<h1 id="2-%e5%af%bc%e5%85%a5%e8%87%aa%e5%ae%9a%e4%b9%89loader">2. 导入自定义loader</h1>
+<p>方式一</p>
+<pre><code class="language-js"><div>{
+  <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+  <span class="hljs-attr">use</span>: path.resolve(__dirname, <span class="hljs-string">'loader'</span>, <span class="hljs-string">'loader1.js'</span>) <span class="hljs-comment">// loader为webpack同目录下的loader文件夹，loader1为自定义的loader</span>
+}
+</div></code></pre>
+<p>方式二: resolveLoader里配置别名，resolveLoader是专门解析loader的，和module,entry同级</p>
+<pre><code class="language-js"><div> resolveLoader: {
+    <span class="hljs-comment">// 别名</span>
+    alias: {
+      <span class="hljs-attr">loader1</span>: path.resolve(__dirname, <span class="hljs-string">'loader'</span>, <span class="hljs-string">'loader1.js'</span>)
+    }
+  },
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: <span class="hljs-string">'loader1'</span>
+      }
+    ]
+  }
+</div></code></pre>
+<p>方式三： 在resolveLoader里配置modules</p>
+<pre><code class="language-js"><div>  resolveLoader: {
+    <span class="hljs-attr">modules</span>: [<span class="hljs-string">'node_modules'</span>, path.resolve(__dirname, <span class="hljs-string">'loader'</span>)] <span class="hljs-comment">// 只需要配置文件夹名</span>
+  },
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: <span class="hljs-string">'loader1'</span>
+      }
+    ]
+  }
+</div></code></pre>
+<h1 id="3-%e5%af%bc%e5%85%a5%e5%a4%9a%e4%b8%aaloader">3. 导入多个loader</h1>
+<p>顺序： 默认从下到上，从右到左</p>
+<pre><code class="language-js"><div>resolveLoader: {
+    <span class="hljs-comment">// 别名</span>
+    alias: {
+      <span class="hljs-attr">loader1</span>: path.resolve(__dirname, <span class="hljs-string">'loader'</span>, <span class="hljs-string">'loader1.js'</span>),
+      <span class="hljs-attr">loader2</span>: path.resolve(__dirname, <span class="hljs-string">'loader'</span>, <span class="hljs-string">'loader2.js'</span>)
+      loader3: path.resolve(__dirname, <span class="hljs-string">'loader'</span>, <span class="hljs-string">'loader3.js'</span>)
+    }
+  },
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader1'</span>, <span class="hljs-string">'loader2'</span>,<span class="hljs-string">'loader3'</span>]
+      }
+    ]
+  }
+<span class="hljs-comment">/*
+loader3
+loader2
+loader1
+*/</span>
+rules: [
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader3'</span>]
+      },
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader2'</span>]
+      },
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader1'</span>]
+      }
+  ]
+<span class="hljs-comment">/*
+loader1
+loader2
+loader3
+*/</span>
+</div></code></pre>
+<ul>
+<li>添加enforce参数修改顺序, enforce: pre 前面的， post在后面的。</li>
+<li>loader两个阶段：pitching和normal阶段，类似于js中的事件冒泡、捕获阶段
+<ul>
+<li>Pitching阶段： post，inline，normal，pre</li>
+<li>Normal阶段：pre，normal，inline，post</li>
+</ul>
+</li>
+<li>添加 -！ 不让文件再通过pre + normal处理</li>
+<li>添加！ 不让normal处理</li>
+<li>添加！！ 只让inline处理</li>
+</ul>
+<pre><code class="language-js"><div>    rules: [
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader3'</span>],
+          <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span>
+      },
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader2'</span>]
+      },
+      {
+          <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+          <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader1'</span>],
+          <span class="hljs-attr">enforce</span>: <span class="hljs-string">'post'</span>
+      }
+  ]
+<span class="hljs-comment">/*
+loader3
+loader2
+loader1
+*/</span>
+{
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader3'</span>],
+    <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span>
+},
+{
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader2'</span>]
+},
+{
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">use</span>: [<span class="hljs-string">'loader1'</span>],
+    <span class="hljs-attr">enforce</span>: <span class="hljs-string">'post'</span>
+}
+<span class="hljs-comment">// 在src/index.js文件行内配置了 let str = require('inline-loader!./inlineA.js')之后</span>
+<span class="hljs-comment">// 第一次的loader3、loader2、loader1是处理正常文档的，下面的loader是处理require文档的</span>
+<span class="hljs-comment">/*
+loader3
+loader2
+loader1
+loader3
+loader2
+inline-loader
+loader1
+*/</span>
+<span class="hljs-comment">// 在src/index.js文件行内配置了 let str = require('-!inline-loader!./inlineA.js')之后</span>
+<span class="hljs-comment">/*不再经过pre+normal处理，就是3和2已经没有了
+loader3
+loader2
+loader1
+inline-loader
+loader1
+*/</span>
+<span class="hljs-comment">// 在src/index.js文件行内配置了 let str = require('!inline-loader!./inlineA.js')之后</span>
+<span class="hljs-comment">/*不再经过normal处理，就是2没有
+/*
+loader3
+loader2
+loader1
+loader3
+inline-loader
+loader1
+*/</span>
+<span class="hljs-comment">// 在src/index.js文件行内配置了 let str = require('!!inline-loader!./inlineA.js')之后</span>
+<span class="hljs-comment">/*只有inline处理
+/*
+loader3
+loader2
+loader1
+inline-loader
+*/</span>
+</div></code></pre>
+<p>loader.pitch有返回值时： 会阻断执行</p>
+<pre><code class="language-js"><div><span class="hljs-comment">// webpack.config.js顺序： use: ['loader3', 'loader2', 'loader1']</span>
+<span class="hljs-comment">/*结果： loader1 loader2 loader3*/</span>
+<span class="hljs-comment">// 在loader2.js添加</span>
+loader2.pitch = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'loader2有返回值停止'</span>
+<span class="hljs-comment">/*结果变成： loader3*/</span>
+</div></code></pre>
+<h1 id="4-%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ae%9e%e7%8e%b0babel-loader">4. 自定义实现babel-loader</h1>
+<ul>
+<li>npm install @babel/core @babel/preset-env loader-utils
+loader-utils是loader的工具类</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> babelCore = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@babel/core'</span>)
+<span class="hljs-keyword">let</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'loader-utils'</span>)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">babel</span> (<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-comment">// console.log(this.resourcePath) // 结果 D:\note\webpack_loader\src\index.js</span>
+  <span class="hljs-keyword">let</span> options = loaderUtils.getOptions(<span class="hljs-keyword">this</span>)  <span class="hljs-comment">// 获取配置选项</span>
+  <span class="hljs-keyword">let</span> callback = <span class="hljs-keyword">this</span>.async() <span class="hljs-comment">// 函数是异步</span>
+  babelCore.transform(source, {
+    ...options,
+    <span class="hljs-attr">sourceMap</span>: <span class="hljs-literal">true</span>,  <span class="hljs-comment">// 设置源码映射</span>
+    filename: <span class="hljs-keyword">this</span>.resourcePath.split(<span class="hljs-string">'/'</span>).pop() <span class="hljs-comment">// 命名生成的文件名</span>
+  }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, result</span>) </span>{
+    callback(error, result.code, result.map)  <span class="hljs-comment">// 返回：错误，源码，源码映射</span>
+  })
+}
+<span class="hljs-built_in">module</span>.exports = babel
+</div></code></pre>
+<h1 id="5-%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ae%9e%e7%8e%b0banner-loader">5. 自定义实现banner-loader</h1>
+<p>该loader的作用是是给匹配的js添加一个注释</p>
+<ul>
+<li>npm install schema-utils
+wepack.config.js</li>
+</ul>
+<pre><code class="language-js"><div>{    <span class="hljs-comment">// 给所有匹配的`js`加一个注释</span>
+    test: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">use</span>: {
+        <span class="hljs-attr">loader</span>: <span class="hljs-string">'banner-loader'</span>,
+        <span class="hljs-attr">options</span>: {
+           <span class="hljs-attr">text</span>: <span class="hljs-string">'may'</span>,
+           <span class="hljs-attr">filename</span>: path.resolve(__dirname, <span class="hljs-string">'banner.js'</span>)
+        }
+    }
+}
+</div></code></pre>
+<pre><code class="language-js"><div><span class="hljs-comment">// 拿到loader的配置</span>
+<span class="hljs-keyword">let</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'loader-utils'</span>)
+<span class="hljs-comment">// 校验Loader的模块</span>
+<span class="hljs-keyword">let</span> validateOptions = <span class="hljs-built_in">require</span>(<span class="hljs-string">'schema-utils'</span>)
+<span class="hljs-comment">// 读取文件</span>
+<span class="hljs-keyword">let</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span>(<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-keyword">let</span> options = loaderUtils.getOptions(<span class="hljs-keyword">this</span>)
+  <span class="hljs-keyword">let</span> callback = <span class="hljs-keyword">this</span>.async()
+  <span class="hljs-keyword">let</span> schema = {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'object'</span>,
+    <span class="hljs-attr">properties</span>: {
+      <span class="hljs-attr">text</span>: {
+        <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>
+      },
+      <span class="hljs-attr">filename</span>: {
+        <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>
+      }
+    }
+  }
+  validateOptions(schema, options, <span class="hljs-string">'banner-loader'</span>)  <span class="hljs-comment">// 自己的校验格式， 自己的写的配置， 对应的loader名字说明哪个loader报错</span>
+  <span class="hljs-keyword">if</span> (options.filename) {
+    <span class="hljs-keyword">this</span>.cacheable(<span class="hljs-literal">false</span>) <span class="hljs-comment">// webpack自动会启动缓存，这里设置不要缓存 ，如果计算量很大时，一般需要缓存</span>
+    <span class="hljs-comment">// this.cacheable &amp;&amp; this.cacheable() // 第一次就缓存，之后就再缓存</span>
+    <span class="hljs-keyword">this</span>.addDependency(options.filename) <span class="hljs-comment">// 添加到webpack依赖里面去，启动了watch,如果发生了变化，就重新打包</span>
+    fs.readFile(options.filename, <span class="hljs-string">'utf-8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+      callback(err, <span class="hljs-string">`/**<span class="hljs-subst">${data}</span>**/<span class="hljs-subst">${source}</span>`</span>)
+    })
+  } <span class="hljs-keyword">else</span> {
+    callback(nul, <span class="hljs-string">`/**<span class="hljs-subst">${options.text}</span>**/<span class="hljs-subst">${source}</span>`</span>)
+  }
+  <span class="hljs-keyword">return</span> source
+}
+
+<span class="hljs-built_in">module</span>.exports = loader
+<span class="hljs-comment">// 建一个文档'banner.js' 写上Olivia123</span>
+<span class="hljs-comment">// 打包后在生成的文件里就包含/**Olivia123**/</span>
+</div></code></pre>
+<h1 id="6-%e5%ae%9e%e7%8e%b0file-loader%e5%92%8curl-loader">6. 实现file-loader和url-loader</h1>
+<ul>
+<li>file-loader: 目的是根据图片生成md5 发射到dist目录下，file-loader 返回当前图片路径</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'loader-utils'</span>)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span>(<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-comment">// file-loader: 目的是根据图片生成md5 发射到dist目录下，file-loader 返回当前图片路径</span>
+  <span class="hljs-keyword">let</span> filename = loaderUtils.interpolateName(<span class="hljs-keyword">this</span>, <span class="hljs-string">'[hash].[ext]'</span>,
+   {<span class="hljs-attr">content</span>: source})
+  <span class="hljs-keyword">this</span>.emitFile(filename, source) <span class="hljs-comment">// 发射文件</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-string">`module.exports="<span class="hljs-subst">${filename}</span>"`</span>
+}
+loader.raw = <span class="hljs-literal">true</span> <span class="hljs-comment">// 转成二进制</span>
+<span class="hljs-built_in">module</span>.exports = loader
+</div></code></pre>
+<ul>
+<li>url-loader: 如果文件比limit小，将图片文件转换为base64编码并载入浏览器能够减少http请求数；如果文件比limit（以bytes为单位）大，那么webpack就会使用file-loader去处理文件，并且所有的查询参数都会传递给file-loader。</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'loader-utils'</span>)
+<span class="hljs-keyword">let</span> mime = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mime'</span>) <span class="hljs-comment">// 获取文件后缀</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span>(<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-keyword">let</span> {limit} = loaderUtils.getOptions(<span class="hljs-keyword">this</span>)
+  <span class="hljs-keyword">if</span> (limit &amp;&amp; limit &gt; source.length) { <span class="hljs-comment">// 如果文件小于限制，用base64编码，base64格式：data:image/png;base64,编码部分</span>
+    <span class="hljs-comment">// ${mime.getType(this.resourcePath)}代表文件后缀</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`module.exports = "data:<span class="hljs-subst">${mime.getType(<span class="hljs-keyword">this</span>.resourcePath)}</span>;base64,<span class="hljs-subst">${source.toString(<span class="hljs-string">'base64'</span>)}</span>"`</span>
+  } <span class="hljs-keyword">else</span> { <span class="hljs-comment">// 大于限制，直接使用file-loader</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">require</span>(<span class="hljs-string">'./file-loader'</span>).call(<span class="hljs-keyword">this</span>, source)
+  }
+}
+
+loader.raw = <span class="hljs-literal">true</span>
+<span class="hljs-built_in">module</span>.exports = loader
+</div></code></pre>
+<h1 id="7-%e5%ae%9e%e7%8e%b0less-loadercss-loaderstyle-loader">7. 实现less-loader,css-loader,style-loader</h1>
+<ul>
+<li>less-loader:需要npm install less，用于加载.less文件，将less转化为css</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> less = <span class="hljs-built_in">require</span>(<span class="hljs-string">'less'</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span> (<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-keyword">let</span> css
+  <span class="hljs-comment">// console.log(source, 2222)</span>
+  less.render(source, (err, output) =&gt; { <span class="hljs-comment">//less.render()第一个参数是源码，第二个参数是失败和成功的结果</span>
+    <span class="hljs-comment">// console.log(output)</span>
+    css = output.css <span class="hljs-comment">// output.css就是less转为css的结果</span>
+  })
+  <span class="hljs-comment">// css = css.replace(/\n/g, '\\n')</span>
+  <span class="hljs-keyword">return</span> css
+}
+
+<span class="hljs-built_in">module</span>.exports = loader
+</div></code></pre>
+<ul>
+<li>css-loader：用于加载.css文件，将css转化为commonjs， 用来解析@import这种语法，包括css中的引入图片</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">/* less代码：
+@base: #666;
+body {
+  background: @base;
+  background-image: url('../src/2.png');
+}
+将less代码分成三部分
+第一部分：
+@base: #666;
+body {
+  background: @base;
+  background-image:
+第二部分：使用require将其打包
+url('./2.png');
+第三部分：
+}
+*/</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span> (<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-keyword">let</span> reg = <span class="hljs-regexp">/url\((.+?)\)/g</span> <span class="hljs-comment">// 匹配url(),(.+?)为惰性匹配，参考链接： https://www.cnblogs.com/ysk123/p/9896850.html</span>
+  <span class="hljs-keyword">let</span> pos = <span class="hljs-number">0</span> <span class="hljs-comment">// 代码的位置</span>
+  <span class="hljs-keyword">let</span> current
+  <span class="hljs-keyword">let</span> arr = [<span class="hljs-string">'let list = []'</span>] <span class="hljs-comment">// 最后要拼出一个字符串的结果</span>
+
+  <span class="hljs-keyword">while</span> (current = reg.exec(source)) {
+    <span class="hljs-keyword">let</span> [matchUrl, group] = current <span class="hljs-comment">//[匹配的路径，匹配到的正则()分组] </span>
+    <span class="hljs-comment">// console.log("matchUrl: ",matchUrl, "group: ",group) // matchUrl:  url('./2.png') group:  './2.png'</span>
+    <span class="hljs-keyword">let</span> last = reg.lastIndex - matchUrl.length <span class="hljs-comment">// 代码的长度-匹配url()的长度</span>
+    arr.push(<span class="hljs-string">`list.push(<span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(source.slice(pos, last))}</span>)`</span>) <span class="hljs-comment">// 拼入第一部分的代码</span>
+    pos = reg.lastIndex
+    arr.push(<span class="hljs-string">`list.push('url('+ require(<span class="hljs-subst">${group}</span>) +')')`</span>)  <span class="hljs-comment">// 把url里的内容（正则（）里的内容）弄成require的写法，拼入第二部分的代码--》url(require('../src/2.png'))</span>
+  }
+  arr.push(<span class="hljs-string">`list.push(<span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(source.slice(pos))}</span>)`</span>) <span class="hljs-comment">// 拼入地址之后到结尾的代码--》一个回车}</span>
+  arr.push(<span class="hljs-string">`module.exports = list.join('')`</span>) <span class="hljs-comment">// 数组通过module.exports导出</span>
+  <span class="hljs-comment">// console.log("arr.join('\r\n'): ", arr.join('\r\n'))</span>
+  <span class="hljs-comment">/**打印结果：
+    let list = []
+    list.push($(JSON.stringfy(source.slice(position, last)))
+    last.push('url('+require($(group)+')')
+    list.push($JSON.stringfy(source.slice(position)))
+    module.exports=list.join('')
+   */</span>
+  <span class="hljs-keyword">return</span> arr.join(<span class="hljs-string">'\r\n'</span>)
+
+}
+
+<span class="hljs-built_in">module</span>.exports = loader
+</div></code></pre>
+<ul>
+<li>style-loader: 将样式通过<code>style</code>标签插入到head中</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'loader-utils'</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loader</span> (<span class="hljs-params">source</span>) </span>{
+  <span class="hljs-keyword">let</span> str = <span class="hljs-string">`
+  let style = document.createElement('style')
+    style.innerHTML = <span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(source)}</span>
+    document.head.appendChild(style)`</span>
+  <span class="hljs-comment">// JSON.stringify(source) 不仅将源码都转成字符串，还将回车转成\r\n ==&gt;style.innerHTML = 'body{\r\n background: red}'</span>
+  <span class="hljs-keyword">return</span> str
+}
+<span class="hljs-comment">// 在style-loader上写了pitch，让style-loader 处理 less-loader 和css-loader拼接的结果</span>
+<span class="hljs-comment">// webpack.config.js顺序：use: ['style-loader', 'css-loader', 'less-loader']</span>
+loader.pitch = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">remainingRequest</span>) </span>{ <span class="hljs-comment">// 剩余的请求  less-loader!css-loader!/./background.less</span>
+  <span class="hljs-comment">// console.log("remainingRequest:", remainingRequest)</span>
+  <span class="hljs-comment">// 打印结果： D:\note\webpack_loader\loader\css-loader.js!D:\note\webpack_loader\loader\less-loader.js!D:\note\webpack_loader\src\background.less</span>
+  
+  <span class="hljs-comment">// console.log("loaderUtils.stringifyRequest: ", loaderUtils.stringifyRequest(this, '!!' + remainingRequest))</span>
+  <span class="hljs-comment">// 打印结果： !!../loader/css-loader.js!../loader/less-loader.js!./background.less</span>
+  <span class="hljs-keyword">let</span> str = <span class="hljs-string">`
+  let style = document.createElement('style')
+  style.innerHTML = require(<span class="hljs-subst">${loaderUtils.stringifyRequest(<span class="hljs-keyword">this</span>, <span class="hljs-string">'!!'</span> + remainingRequest)}</span>)
+  document.head.appendChild(style)`</span>
+  <span class="hljs-comment">// // 添加！表示该loader为行内，loaderUtils.stringifyRequest将其路径变为相对路径</span>
+  <span class="hljs-keyword">return</span> str
+}
+
+<span class="hljs-built_in">module</span>.exports = loader
+</div></code></pre>
+<ul>
+<li>webpack.config.js</li>
+</ul>
+<pre><code class="language-js"><div>{
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.less$/</span>,
+    <span class="hljs-attr">use</span>: [<span class="hljs-string">'style-loader'</span>, <span class="hljs-string">'css-loader'</span>, <span class="hljs-string">'less-loader'</span>]
+}
+</div></code></pre>
+<h1 id="8-plugins%e9%a1%ba%e5%ba%8f">8. Plugins顺序</h1>
+<p>看node_modules/webpack/Compiler.js里面的class Compiler extends Tapable{}，里面包含hooks监听的各种事件
+先按照webpack.config.js的编写顺序完成同步，再按照hooks的顺序再完成异步。</p>
+<ul>
+<li>webpack.config.js</li>
+</ul>
+<pre><code class="language-js"><div>  plugins: [
+    <span class="hljs-keyword">new</span> DonePlugin(), <span class="hljs-comment">// 同步</span>
+    <span class="hljs-keyword">new</span> AsyncPlugins() ,<span class="hljs-comment">// 异步</span>
+  ]
+</div></code></pre>
+<ul>
+<li>DonePlugin:同步编译完成</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DonePlugins</span> </span>{
+  apply (compiler) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"DonePlugins"</span>)
+    compiler.hooks.done.tap(<span class="hljs-string">'DonePlugin'</span>, (status) =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"编译完成"</span>)
+    })
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = DonePlugins
+</div></code></pre>
+<ul>
+<li>AsyncPlugins：异步发射</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncPlugins</span> </span>{
+  apply (compiler) { <span class="hljs-comment">// 绑定发射的钩子</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"AsyncPlugins"</span>)
+    compiler.hooks.emit.tapAsync(<span class="hljs-string">'AsyncPlugins'</span>, (compliation, callback) =&gt; {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"使用tapAsync文件发射,等一秒"</span>)
+        callback()
+      }, <span class="hljs-number">1000</span>)
+    })
+    compiler.hooks.emit.tapPromise(<span class="hljs-string">'AsyncPlugins'</span>, (compliation, callback) =&gt; {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+        setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"使用tapPromise文件发射，,等两秒"</span>)
+          resolve()
+        }, <span class="hljs-number">2000</span>)
+      })
+    })
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = AsyncPlugins
+<span class="hljs-comment">/*
+DonePlugins
+AsyncPlugins
+使用tapAsync文件发射,等一秒
+使用tapPromise文件发射,等两秒
+编译完成
+*/</span>
+</div></code></pre>
+<h1 id="9-%e6%96%87%e4%bb%b6%e5%88%97%e8%a1%a8%e6%8f%92%e4%bb%b6%e7%94%9f%e6%88%90%e4%b8%80%e4%b8%aa%e6%96%87%e4%bb%b6%e6%8f%8f%e8%bf%b0%e6%89%93%e5%8c%85%e6%96%87%e4%bb%b6%e7%9a%84%e6%8f%92%e4%bb%b6">9. 文件列表插件:生成一个文件描述打包文件的插件</h1>
+<ul>
+<li>webpack.config.js</li>
+</ul>
+<pre><code class="language-js"><div>    <span class="hljs-keyword">new</span> FileListPLugin({
+      <span class="hljs-attr">filename</span>: <span class="hljs-string">'list.md'</span>
+    }),
+</div></code></pre>
+<ul>
+<li>FileListPlugin</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileListPlugin</span> </span>{
+  <span class="hljs-keyword">constructor</span> ({filename}) {
+    <span class="hljs-keyword">this</span>.filename = filename
+  }
+  apply (compiler) {
+    <span class="hljs-comment">// 文件已经准备好，要进行发射</span>
+    compiler.hooks.emit.tap(<span class="hljs-string">'FileListPlugin'</span>, (compilation) =&gt; {
+      <span class="hljs-keyword">let</span> assets = compilation.assets <span class="hljs-comment">// assets里包含保存的资源</span>
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"assets"</span>, assets)
+      <span class="hljs-keyword">let</span> content = <span class="hljs-string">`## 文件名 资源大小\r\n`</span> <span class="hljs-comment">// 文件里默认的字符串</span>
+      <span class="hljs-comment">//  Object.entries()将文件转成数组 [[bundle.js, {}], [index.html, {}]]</span>
+      <span class="hljs-comment">// 如资源：'index.html': { source: [Function: source], size: [Function: size] }</span>
+      <span class="hljs-built_in">Object</span>.entries(assets).forEach(<span class="hljs-function">(<span class="hljs-params">[filename, statObj]</span>) =&gt;</span> {
+        content += <span class="hljs-string">`-<span class="hljs-subst">${filename}</span>  <span class="hljs-subst">${statObj.size()}</span>\r\n`</span>
+      })
+      <span class="hljs-comment">// 把生成的文件也添加到资源对象里</span>
+      assets[<span class="hljs-keyword">this</span>.filename] = {
+        source() {
+          <span class="hljs-keyword">return</span> content
+        },
+        size() {
+          <span class="hljs-keyword">return</span> content.length
+        }
+      }
+    })
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = FileListPlugin
+<span class="hljs-comment">/* list.md
+## 文件名 资源大小
+-index.html  5629
+*/</span>
+</div></code></pre>
+<h1 id="10-%e5%86%85%e8%81%94%e7%9a%84webpack%e6%8f%92%e4%bb%b6">10. 内联的webpack插件</h1>
+<ul>
+<li>需要npm install html-webpack-plugin@next mini-css-extract-plugin</li>
+<li>HtmlWebpackPlugin的钩子监听的函数： <a href="https://github.com/jantimon/html-webpack-plugin">https://github.com/jantimon/html-webpack-plugin</a></li>
+<li>webpack.config.js</li>
+</ul>
+<pre><code class="language-js"><div>  plugins: [
+    <span class="hljs-keyword">new</span> MiniCssExtractPlugin({
+      <span class="hljs-attr">filename</span>: <span class="hljs-string">'main.css'</span>
+    }),
+    <span class="hljs-keyword">new</span> HtmlWebpackPlugin({
+      <span class="hljs-attr">template</span>: <span class="hljs-string">'./src/index.html'</span>
+    }),
+    <span class="hljs-keyword">new</span> InlineSourcePlugins({
+      <span class="hljs-attr">match</span>: <span class="hljs-regexp">/\.(js|css)$/</span>
+    })
+  ]
+</div></code></pre>
+<ul>
+<li>InlineSourcePlugin: 把js，css外链标签打包后内联在index.html文件中</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">const</span> HtmlWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'html-webpack-plugin'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InlineSourcePlugins</span> </span>{
+  <span class="hljs-keyword">constructor</span> ({match}) {
+    <span class="hljs-keyword">this</span>.reg = match
+  }
+
+  <span class="hljs-comment">// 处理某一个标签的方法</span>
+  processTag(tag, compilation) {
+    <span class="hljs-comment">// tag: { tagName: 'link', voidTag: true, attributes: [Object] } </span>
+    <span class="hljs-comment">// console.log(tag.attributes) // { href: 'main.css', rel: 'stylesheet' } { src: 'bundle.js' }</span>
+    <span class="hljs-keyword">let</span> newTag = {}
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">''</span> <span class="hljs-comment">// 保存文件地址</span>
+    <span class="hljs-comment">// 配置文件的标签和文件地址</span>
+    <span class="hljs-keyword">if</span> (tag.tagName === <span class="hljs-string">'link'</span> &amp;&amp; <span class="hljs-keyword">this</span>.reg.test(tag.attributes.href)) {
+      newTag = {
+        <span class="hljs-attr">tagName</span>: <span class="hljs-string">'style'</span>,
+        <span class="hljs-attr">attributes</span>: {<span class="hljs-attr">type</span>: <span class="hljs-string">'text/css'</span>}
+      }
+      url = tag.attributes.href <span class="hljs-comment">// 文件路径</span>
+    }
+    <span class="hljs-keyword">if</span> (tag.tagName === <span class="hljs-string">'script'</span> &amp;&amp; <span class="hljs-keyword">this</span>.reg.test(tag.attributes.src)) {
+      newTag = {
+        <span class="hljs-attr">tagName</span>: <span class="hljs-string">'script'</span>,
+        <span class="hljs-attr">attributes</span>: {<span class="hljs-attr">type</span>: <span class="hljs-string">'application/javascript'</span>}
+      }
+      url = tag.attributes.src
+    }
+    <span class="hljs-comment">// 配置文件的代码</span>
+    <span class="hljs-keyword">if</span> (url) {
+      newTag.innerHTML = compilation.assets[url].source() <span class="hljs-comment">// 文件内容放到innerHTML属性中</span>
+      <span class="hljs-keyword">delete</span> compilation.assets[url] <span class="hljs-comment">// 删除原有的资源</span>
+      <span class="hljs-comment">// console.log(compilation.assets[url].source())</span>
+      <span class="hljs-keyword">return</span> newTag
+    }
+    <span class="hljs-keyword">return</span> tag
+  }
+
+  <span class="hljs-comment">// // 处理引入标签的数据</span>
+  processTags(data, compilation) {
+    <span class="hljs-comment">//  目前data：headTags: [ { tagName: 'link', voidTag: true, attributes: [Object] } ],</span>
+    <span class="hljs-comment">// bodyTags: [ { tagName: 'script', voidTag: false, attributes: [Object] } ],</span>
+    <span class="hljs-keyword">let</span> headTags = []
+    <span class="hljs-keyword">let</span> bodyTags = []
+    data.headTags.forEach(<span class="hljs-function"><span class="hljs-params">headTag</span> =&gt;</span> {
+      headTags.push(<span class="hljs-keyword">this</span>.processTag(headTag, compilation))
+    }) 
+    data.bodyTags.forEach(<span class="hljs-function"><span class="hljs-params">bodyTag</span> =&gt;</span> {
+      bodyTags.push(<span class="hljs-keyword">this</span>.processTag(bodyTag, compilation))
+    })
+    <span class="hljs-comment">//console.log(...data, headTags, bodyTags)</span>
+    <span class="hljs-keyword">return</span> {...data, headTags, bodyTags}
+  }
+
+  apply(compiler) {
+    <span class="hljs-comment">// 通过webpackPlugin来实现 百度搜索html-webpack-plugin看它的钩子</span>
+    compiler.hooks.compilation.tap(<span class="hljs-string">'InlineSourcePlugin'</span>, (compilation) =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'The compiler is starting a new compilation...'</span>)
+      <span class="hljs-comment">// alterAssetTagGroups：修改资源标签组之前</span>
+      HtmlWebpackPlugin.getHooks(compilation).alterAssetTagGroups.tapAsync(
+        <span class="hljs-string">'alterPlugin'</span>,
+        (data, callback) =&gt; {
+          <span class="hljs-comment">//console.log(data)</span>
+          <span class="hljs-comment">/* {
+              headTags: [ { tagName: 'link', voidTag: true, attributes: [Object] } ],
+              bodyTags: [ { tagName: 'script', voidTag: false, attributes: [Object] } ],
+              outputName: 'index.html',
+              plugin: HtmlWebpackPlugin {...
+                ...
+           */</span>
+          data = <span class="hljs-keyword">this</span>.processTags(data, compilation) <span class="hljs-comment">// 资源都在compilation里面</span>
+          callback(<span class="hljs-literal">null</span>, data) <span class="hljs-comment">// 成功就把数据返回去</span>
+        }
+      )
+    })
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = InlineSourcePlugins
+
+<span class="hljs-comment">/**按照姜文老师install html-webpack-plugin的过程中，使用getHooks()报错this.htmlWebpackPlugin.getHooks is not a function，
+ * install html-webpack-plugin之后就可以正常使用
+ */</span>
+</div></code></pre>
+
+    </body>
+    </html>

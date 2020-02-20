@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1. 概念</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <ul>
+<li>
+<p><a href="#1-%e6%a6%82%e5%bf%b5">1. 概念</a></p>
+</li>
+<li>
+<p><a href="#2-loader%e5%8a%a0%e8%bd%bd%e5%99%a8">2. Loader加载器</a></p>
+<ul>
+<li><a href="#21-loader%e7%9a%84%e7%89%b9%e7%82%b9">2.1. loader的特点</a></li>
+<li><a href="#22-loader%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">2.2. loader的执行顺序</a></li>
+<li><a href="#23-%e5%a6%82%e6%9e%9c%e6%88%91%e4%bb%ac%e9%87%87%e7%94%a8%e4%ba%86%e4%b8%a4%e7%a7%8d%e8%a7%a3%e6%9e%90loader%e7%9a%84%e6%96%b9%e5%bc%8f%e4%bb%96%e4%bb%ac%e7%9a%84%e6%89%a7%e8%a1%8c%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e7%9a%84%e5%91%a2">2.3. 如果我们采用了两种解析loader的方式，他们的执行是什么样的呢？</a></li>
+<li><a href="#24-loader%e7%9a%84%e7%a6%81%e7%94%a8">2.4. loader的禁用</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#3-plugin">3. Plugin</a></p>
+</li>
+<li>
+<p><a href="#4-mode%e9%85%8d%e7%bd%ae">4. mode配置</a></p>
+</li>
+<li>
+<p><a href="#5-%e5%9f%ba%e6%9c%ac%e9%85%8d%e7%bd%ae">5. 基本配置</a></p>
+</li>
+<li>
+<p><a href="#6-webpackconfigjs%e9%85%8d%e7%bd%ae">6. webpack.config.js配置</a></p>
+</li>
+<li>
+<p><a href="#7-%e6%9c%ac%e5%9c%b0%e6%9c%8d%e5%8a%a1webpack-dev-server%e9%85%8d%e7%bd%ae">7. 本地服务webpack-dev-server配置</a></p>
+</li>
+<li>
+<p><a href="#8-html-webpack-plugin%e6%89%93%e5%8c%85html%e6%96%87%e4%bb%b6">8. html-webpack-plugin打包html文件</a></p>
+<ul>
+<li><a href="#81-%e8%b7%af%e5%be%84">8.1. 路径</a></li>
+<li><a href="#82-%e5%a4%9a%e5%85%a5%e5%8f%a3%e6%96%87%e4%bb%b6">8.2. 多入口文件</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#9-%e5%a4%84%e7%90%86css">9. 处理css</a></p>
+</li>
+<li>
+<p><a href="#10-%e5%a4%84%e7%90%86js">10. 处理js</a></p>
+<ul>
+<li><a href="#101-es6%e8%bd%aces5-%e8%bd%aces7%e7%9a%84%e8%af%ad%e6%b3%95-%e5%85%b6%e4%bb%96%e4%b8%8d%e5%85%bc%e5%ae%b9%e7%9a%84%e9%ab%98%e7%ba%a7%e8%af%ad%e6%b3%95">10.1. es6转es5 转es7的语法 其他不兼容的高级语法</a>
+<ul>
+<li><a href="#1011-%e8%af%ad%e6%b3%95%e6%a3%80%e6%9f%a5eslint">10.1.1. 语法检查eslint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="#11-%e5%9b%be%e7%89%87%e5%ad%97%e4%bd%93%e5%8a%a0%e8%bd%bdfile-loader%e5%92%8c%e5%9b%be%e7%89%87%e4%bc%98%e5%8c%96url-loader">11. 图片/字体加载file-loader和图片优化url-loader</a></p>
+<ul>
+<li><a href="#111-%e5%9b%be%e7%89%87%e5%a4%84%e7%90%86">11.1. 图片处理</a></li>
+<li><a href="#112-%e5%9b%be%e7%89%87%e5%8e%8b%e7%bc%a9">11.2. 图片压缩</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#12-%e6%b8%85%e9%99%a4%e7%9b%ae%e5%bd%95%e6%8b%b7%e8%b4%9d%e6%96%87%e4%bb%b6%e5%a4%b9%e7%89%88%e6%9d%83%e5%a3%b0%e6%98%8e">12. 清除目录、拷贝文件夹、版权声明</a></p>
+</li>
+<li>
+<p><a href="#13-%e5%ae%9a%e4%b9%89%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f">13. 定义环境变量</a></p>
+</li>
+<li>
+<p><a href="#14-noparse%e6%9f%90%e4%ba%9b%e5%8c%85%e6%98%af%e7%8b%ac%e7%ab%8b%e7%9a%84%e4%b8%aa%e4%bd%93%e6%b2%a1%e6%9c%89%e4%be%9d%e8%b5%96-include-exclude%e5%8f%aa%e9%9c%80%e8%a6%81%e4%b8%80%e4%ba%9b%e5%8c%85%e7%9a%84%e6%9f%90%e4%ba%9b%e5%8a%9f%e8%83%bd">14. noParse某些包是独立的个体没有依赖, include, exclude，只需要一些包的某些功能</a></p>
+</li>
+<li>
+<p><a href="#15-webpackdllreferenceplugin">15. webpack.DllReferencePlugin</a></p>
+</li>
+<li>
+<p><a href="#16-%e7%bc%a9%e7%9f%ad%e6%89%93%e5%8c%85%e6%97%b6%e9%97%b4%e5%a4%9a%e7%ba%bf%e7%a8%8b%e6%89%93%e5%8c%85happypack">16. 缩短打包时间多线程打包HappyPack</a></p>
+</li>
+<li>
+<p><a href="#17-webpack%e8%87%aa%e5%b8%a6%e7%9a%84%e4%bc%98%e5%8c%96">17. webpack自带的优化</a></p>
+</li>
+<li>
+<p><a href="#18-%e6%a8%a1%e5%9d%97%e8%a7%a3%e6%9e%90">18. 模块解析</a></p>
+<ul>
+<li><a href="#181-resolve">18.1. resolve</a></li>
+<li><a href="#182-resolveloader">18.2. resolveLoader</a></li>
+<li><a href="#183-devtool%e7%9a%84sourcemapwebpack%e5%86%85%e7%bd%ae">18.3. devtool的sourceMap（webpack内置）</a></li>
+<li><a href="#184-watch-%e5%90%af%e5%8a%a8%e7%9b%91%e6%8e%a7%e8%87%aa%e5%8a%a8%e7%bc%96%e8%af%91">18.4. watch 启动监控自动编译</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#19-%e5%89%8d%e5%90%8e%e7%ab%af%e6%8e%a5%e5%8f%a3%e8%b0%83%e8%af%95">19. 前后端接口调试</a></p>
+</li>
+<li>
+<p>感谢姜文老师</p>
+</li>
+<li>
+<p>视频地址： <a href="https://www.bilibili.com/video/av51693431?p=42">https://www.bilibili.com/video/av51693431?p=42</a></p>
+</li>
+</ul>
+<h1 id="1-%e6%a6%82%e5%bf%b5">1. 概念</h1>
+<ul>
+<li>entry: 默认src/index.j</li>
+<li>output: 默认dist/main.js</li>
+<li>loader: 本身是函数，对模块的源代码进行转换，在配置文件的 module.rules 中配置 loader</li>
+<li>plugins: 本身是一个具有 apply() 方法的类，目的在于解决 loader 无法实现的其它问题。plugins配置项接收一个数组，数组里的每一项都是一个要使用的plugin的实例，plugin需要的参数通过构造函数传入</li>
+<li>mode：
+<ul>
+<li>(不压缩格式)&quot;development&quot;</li>
+<li>(压缩格式) 默认 &quot;production&quot; 会启用 uglifyjs 对 js 代码压缩</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-loader%e5%8a%a0%e8%bd%bd%e5%99%a8">2. Loader加载器</h1>
+<p>参考文章： <a href="https://www.cnblogs.com/hanshuai/p/11287231.html">https://www.cnblogs.com/hanshuai/p/11287231.html</a></p>
+<ul>
+<li>loader在webpack中有4种:normal，inline，pre，post。</li>
+<li>执行顺序：默认从右到左，从下到上</li>
+<li>支持链式传递，支持同异步，命名约定为 xxx-loader</li>
+<li>对单文件打包的方式的loader被称为行内（inline）loader；对于rules中的loader，webpack还定义了一个属性 enforce，可取值有 优先执行pre（为pre loader）、后置执行post（为post loader），如果没有值则为（normal loader）。
+<ul>
+<li>前置loader: enforce: 'pre'</li>
+<li>后置loader: enforce: 'post'</li>
+<li>普通loader</li>
+<li>内联loader: expose?$!jquery</li>
+<li>行内loader: inline-loader!./a.js</li>
+</ul>
+</li>
+</ul>
+<h2 id="21-loader%e7%9a%84%e7%89%b9%e7%82%b9">2.1. loader的特点</h2>
+<ol>
+<li>第一个loader要返回js脚本</li>
+<li>每个loader只做一件内容， 为了使loader在更多场景调用</li>
+<li>每一个loader都是模块</li>
+<li>每个loader都是无状态的，确保loader在不同模块转换之间不保存状态</li>
+</ol>
+<h2 id="22-loader%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">2.2. loader的执行顺序</h2>
+<ol>
+<li>两个阶段：pitching和normal阶段，类似于js中的事件冒泡、捕获阶段
+<ul>
+<li>Pitching阶段： post，inline，normal，pre</li>
+<li>Normal阶段：pre，normal，inline，post</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-comment">// 假设有三个loader,[1,2,3]</span>
+<span class="hljs-comment">// 顺序： pitch阶段： 1 --》 --》2 --》3 --》资源--》normal: 3--&gt;2--&gt;1</span>
+</div></code></pre>
+<ol start="2">
+<li>pitch两种情况</li>
+</ol>
+<ul>
+<li>无返回值，继续后续执行</li>
+<li>有返回值，阻断后续执行，例如 pitch 2 有返回值，将会执行 normal 3</li>
+</ul>
+<pre><code><code><div>loader2.pitch = fn () {
+  //... 无返回值，执行 loader3 -&gt; loader2 -&gt; loader1
+  //... 有返回值，loader2 不会执行，执行 loader1
+}
+</div></code></code></pre>
+<h2 id="23-%e5%a6%82%e6%9e%9c%e6%88%91%e4%bb%ac%e9%87%87%e7%94%a8%e4%ba%86%e4%b8%a4%e7%a7%8d%e8%a7%a3%e6%9e%90loader%e7%9a%84%e6%96%b9%e5%bc%8f%e4%bb%96%e4%bb%ac%e7%9a%84%e6%89%a7%e8%a1%8c%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e7%9a%84%e5%91%a2">2.3. 如果我们采用了两种解析loader的方式，他们的执行是什么样的呢？</h2>
+<p>inline loader优先级高于config配置文件中的loader</p>
+<ul>
+<li>四种类型loader举例：
+<ul>
+<li>pre loader 配置：图片压缩</li>
+<li>普通loader 配置：coffee-script转换</li>
+<li>inline loader 配置：bundle loader</li>
+<li>post loader 配置： 代码覆盖率工具</li>
+</ul>
+</li>
+</ul>
+<h2 id="24-loader%e7%9a%84%e7%a6%81%e7%94%a8">2.4. loader的禁用</h2>
+<ul>
+<li>关于loader的禁用，webpack官方的建议是：除非从另一个loader处理生成的，一般不建议主动使用</li>
+<li>加入 !   前缀禁用配置文件中的普通loader，比如：require(&quot;!raw!./script.coffee&quot;)</li>
+<li>加入 !!  前缀禁用配置文件中所有的loader，比如：require(&quot;!!raw!./script.coffee&quot;)</li>
+<li>加入 -!  前缀禁用配置文件中的pre loader和普通loader，但是不包括post loader，比如：require(&quot;!!raw!./script.coffee&quot;)</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// ...</span>
+  plugins: [
+    <span class="hljs-keyword">new</span> webpack.DefinePlugin({
+      <span class="hljs-string">'process.env.NODE_ENV'</span>: <span class="hljs-built_in">JSON</span>.stringfy(<span class="hljs-string">'production'</span>)
+    })
+  ]
+}
+</div></code></pre>
+<h1 id="3-plugin">3. Plugin</h1>
+<table>
+<thead>
+<tr>
+<th>常用Plugin</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html-webpack-plugin</td>
+<td>打包成html文件</td>
+</tr>
+<tr>
+<td>mini-css-extract-plugin</td>
+<td>将css文件抽离单独文件以link方式插入html</td>
+</tr>
+<tr>
+<td>optimize-css-assets-plugin</td>
+<td>将css文件压缩，使用该插件后需自行处理js压缩</td>
+</tr>
+<tr>
+<td>uglify-js-plugin</td>
+<td>js压缩</td>
+</tr>
+<tr>
+<td>clean-webpack-plugin</td>
+<td>处理每次打包清除指定文件夹，默认是dist</td>
+</tr>
+<tr>
+<td>copy-webpack-plugin</td>
+<td>处理文件拷贝</td>
+</tr>
+<tr>
+<td>happypack</td>
+<td>多线程打包</td>
+</tr>
+</tbody>
+</table>
+<p>webpack本身集成的plugin
+| BannerPlugin | js插入注释内容 |
+| IgnorePlugin | 忽略指定引用文件 |
+| DefinePlugin | 定义环境变量 |
+| ProvidePlugin | 暴露模块，不需要通过import/require引用 |</p>
+<h1 id="4-mode%e9%85%8d%e7%bd%ae">4. mode配置</h1>
+<ul>
+<li>webpack.config.js 无法直接配置 process.env.NODE_ENV 的值，但可以使用 webpack.DefinePlugin 为所有依赖指定该环境值。</li>
+<li>webpack-merge区分打包环境</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">// webpack.common.js</span>
+modules.exports = {
+  <span class="hljs-attr">entry</span>: <span class="hljs-string">'./src/index.js'</span>,
+  <span class="hljs-attr">output</span>: {
+    <span class="hljs-attr">filename</span>: <span class="hljs-string">'bundle.js'</span>, <span class="hljs-comment">// bundle.[hash:8].js // hash:只显示8位</span>
+    path: path.resolve(__dirname, <span class="hljs-string">'dist'</span>),
+    <span class="hljs-attr">publicPath</span>: <span class="hljs-string">''</span> <span class="hljs-comment">// 给所有打包文件引入时加前缀，包括css，js，img，如果只想处理图片可以单独在url-loader配置中加publicPath</span>
+  }
+}
+<span class="hljs-comment">// webpack.dev.js</span>
+<span class="hljs-keyword">const</span> webpackMerge = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-merge'</span>)
+modules.exports = webpackMerge(common, {
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'development'</span>,
+  <span class="hljs-attr">devServer</span>: {
+    port： <span class="hljs-string">'8080'</span>,
+    <span class="hljs-attr">contentBase</span>: <span class="hljs-string">'dist'</span>
+  }
+})
+<span class="hljs-comment">// webpack.prod.js</span>
+<span class="hljs-keyword">const</span> webpackMerge = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-merge'</span>)
+modules.exports = webpackMerge(common, {
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'production'</span>,
+  <span class="hljs-attr">optimization</span>: {
+    <span class="hljs-attr">minimize</span>: <span class="hljs-literal">true</span>
+  }
+})
+<span class="hljs-comment">// development构建</span>
+<span class="hljs-comment">// webpack --config webpack.dev.js</span>
+<span class="hljs-comment">// production构建</span>
+<span class="hljs-comment">// webpack --config webpack.prod.js</span>
+</div></code></pre>
+<h1 id="5-%e5%9f%ba%e6%9c%ac%e9%85%8d%e7%bd%ae">5. 基本配置</h1>
+<p>webpack4打包命令为：webpack</p>
+<h1 id="6-webpackconfigjs%e9%85%8d%e7%bd%ae">6. webpack.config.js配置</h1>
+<pre><code class="language-js"><div><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>)
+modules.exports = {
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'production'</span>,
+  <span class="hljs-attr">entry</span>: <span class="hljs-string">'./src/index.js'</span>,
+  <span class="hljs-attr">output</span>: {
+    <span class="hljs-attr">path</span>: path.resolve(__dirname, <span class="hljs-string">"dist"</span>),
+    <span class="hljs-attr">filename</span>: <span class="hljs-string">'main.js'</span>
+  }
+}
+</div></code></pre>
+<ol>
+<li>webpack.commom.js</li>
+</ol>
+<ul>
+<li>entry</li>
+<li>loader
+<ul>
+<li>url-loader,file-loader</li>
+</ul>
+</li>
+<li>plugins
+<ul>
+<li>html-webpack-plugin</li>
+<li>clean-webpack-plugin</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>webpack.prod.js</li>
+</ol>
+<ul>
+<li>output filename: 'main.[hash].js'</li>
+<li>loader
+<ul>
+<li><code>MiniCssExtractPlugin.loader</code>, <code>css-loader</code>, <code>postcess-loader</code>(<code>autoprefixer</code>) <code>sass-loader</code></li>
+</ul>
+</li>
+<li>plugins
+<ul>
+<li><code>MiniCssExtractPlugin</code></li>
+<li><code>autoprefixer</code></li>
+</ul>
+</li>
+<li>optimization
+<ul>
+<li><code>OptimizeCSSAssetsPlugin</code></li>
+<li><code>UglifyJsPlugin</code></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>webpack.dev.js</li>
+</ol>
+<ul>
+<li>output: filename: 'main.js'</li>
+<li>loader: <code>style.loader</code>, <code>css-loader</code>, <code>postcess-loader</code>, <code>sass-loader</code></li>
+<li>devtool:  <code>source-map</code></li>
+<li>watch:</li>
+</ul>
+<h1 id="7-%e6%9c%ac%e5%9c%b0%e6%9c%8d%e5%8a%a1webpack-dev-server%e9%85%8d%e7%bd%ae">7. 本地服务webpack-dev-server配置</h1>
+<p>npm i webpack-dev-server -D</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>)
+modules.exports = {
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'development'</span>,
+  <span class="hljs-attr">entry</span>: <span class="hljs-string">'./src/index.js'</span>,
+  <span class="hljs-attr">output</span>: {
+    <span class="hljs-attr">path</span>: path.resolve(__dirname, <span class="hljs-string">'dist'</span>),
+    <span class="hljs-attr">filename</span>: <span class="hljs-string">'main.js'</span>
+  },
+  <span class="hljs-comment">// 配置dev-server</span>
+  devServer: {
+    <span class="hljs-comment">// 本地服务器打包后文件保存路径</span>
+    contentBase: <span class="hljs-string">'./dist'</span>,
+    <span class="hljs-comment">// 实时刷新开启</span>
+    inline: <span class="hljs-string">'true'</span>,
+    <span class="hljs-attr">port</span>: <span class="hljs-number">3000</span>,
+    <span class="hljs-comment">// 打包进度条开启</span>
+    progress: <span class="hljs-literal">true</span>,
+    <span class="hljs-comment">// 启动压缩</span>
+    compress: <span class="hljs-literal">true</span>,
+    <span class="hljs-comment">// 自动打开浏览器</span>
+    open: <span class="hljs-literal">true</span>
+  }
+}
+</div></code></pre>
+<h1 id="8-html-webpack-plugin%e6%89%93%e5%8c%85html%e6%96%87%e4%bb%b6">8. html-webpack-plugin打包html文件</h1>
+<ul>
+<li><a href="https://github.com/jantimon/html-webpack-plugin#options">https://github.com/jantimon/html-webpack-plugin#options</a></li>
+<li>为html文件中引入的外部资源如script、link动态添加每次compile后的hash，防止引用缓存的外部文件问题</li>
+<li>可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置N个html-webpack-plugin可以生成N个页面入口</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> HtmlWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'html-webpack-plugin'</span>)
+plugins: [
+  <span class="hljs-keyword">new</span> HtmlWebpackPlugin({ <span class="hljs-comment">// 用于使用模板打包时生成index.html文件，并且在run dev时会将模板文件也打包到内存中</span>
+    template: <span class="hljs-string">'./index.html'</span>, <span class="hljs-comment">// html模板所在的文件路径</span>
+    filename: <span class="hljs-string">'index.html'</span>, <span class="hljs-comment">// 打包后输出的html的文件名称</span>
+    hash: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 给生成的 js 文件一个独特的 hash 值，该 hash 值是该次 webpack 编译的 hash 值，解决缓存问题</span>
+    minify: { <span class="hljs-comment">// 对打包的html模板进行压缩</span>
+      removeAttributeQuotes: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 删除不需要引号的值。</span>
+      collapseWhitespace: <span class="hljs-literal">true</span> <span class="hljs-comment">// 折叠空行变成一行</span>
+    }
+  })
+]
+</div></code></pre>
+<h2 id="81-%e8%b7%af%e5%be%84">8.1. 路径</h2>
+<ol>
+<li>filename配置的html文件目录是相对于webpackConfig.output.path路径而言的，不是相对于当前项目目录结构的。</li>
+<li>指定生成的html文件内容中的link和script路径是相对于生成目录下的，写路径的时候请写生成目录下的相对路径。</li>
+</ol>
+<h2 id="82-%e5%a4%9a%e5%85%a5%e5%8f%a3%e6%96%87%e4%bb%b6">8.2. 多入口文件</h2>
+<ul>
+<li>主要用于多入口文件，当你有多个入口文件，那就回编译后生成多个打包后的文件，那么chunks 就能选择你要使用那些js文件</li>
+<li>chunks:允许插入到模板中的一些chunk，不配置此项默认会将entry中所有的thunk注入到模板中。在配置多个页面时，每个页面注入的thunk应该是不相同的，需要通过该配置为不同页面注入不同的thunk</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">let</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>)
+<span class="hljs-keyword">let</span> HtmlWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'html-webpack-plugin'</span>)
+
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'development'</span>,
+  <span class="hljs-attr">entry</span>: {
+    <span class="hljs-attr">home</span>: <span class="hljs-string">'./src/index.js'</span>,
+    <span class="hljs-attr">other</span>: <span class="hljs-string">'./src/other.js'</span>
+  },
+  <span class="hljs-attr">output</span>: {
+    <span class="hljs-attr">filename</span>: <span class="hljs-string">"[name].js"</span>,
+    <span class="hljs-attr">path</span>: path.resolve(__dirname, <span class="hljs-string">'dist2'</span>)
+  },
+  <span class="hljs-attr">plugins</span>: [
+    <span class="hljs-keyword">new</span> HtmlWebpackPlugin({
+      <span class="hljs-attr">template</span>: <span class="hljs-string">'./index.html'</span>,
+      <span class="hljs-attr">filename</span>: <span class="hljs-string">'home.html'</span>,
+      <span class="hljs-attr">chunks</span>: [<span class="hljs-string">'home'</span>] <span class="hljs-comment">// home.html只有home.js</span>
+    }),
+    <span class="hljs-keyword">new</span> HtmlWebpackPlugin({
+      <span class="hljs-attr">template</span>: <span class="hljs-string">'./index.html'</span>,
+      <span class="hljs-attr">filename</span>: <span class="hljs-string">'other.html'</span>,
+      <span class="hljs-attr">chunks</span>: [<span class="hljs-string">'other'</span>, <span class="hljs-string">'home'</span>]   <span class="hljs-comment">// other.html 里面有 other.js &amp; home.js</span>
+    }),
+  ]
+}
+<span class="hljs-comment">// 编译后</span>
+<span class="hljs-comment">// &lt;script type=text/javascript src="index.js"&gt;&lt;/script&gt;</span>
+<span class="hljs-comment">// &lt;script type=text/javascript src="main.js"&gt;&lt;/script&gt;</span>
+</div></code></pre>
+<h1 id="9-%e5%a4%84%e7%90%86css">9. 处理css</h1>
+<ul>
+<li><code>css-loader</code>  用来解析@import这种语法</li>
+<li><code>style-loader</code> 把 css 插入到head标签中</li>
+<li><code>postcss-loader</code> 当postss加载器单独使用时（没有css加载器），不要使用@import
+<ul>
+<li>给css加上兼容浏览器的前缀</li>
+<li>样式校验（stylelint）</li>
+<li>实现css模块化，防止css样式冲突</li>
+</ul>
+</li>
+<li><code>autoprefixer</code> 处理浏览器兼容</li>
+<li><code>less-loader</code> 把less转换为css</li>
+<li><code>MiniCssExtractPlugin.loader</code> 可以替换style-loader（推荐），但这个还要在Plugin中实例化new  MiniCssExtractPlugin,这可以每个js抽单个css，然后通过link引入</li>
+</ul>
+<ul>
+<li>异步加载</li>
+<li>无重复编译，性能有所提升</li>
+<li>支持HMR</li>
+</ul>
+<ul>
+<li>webpack 4.0以前，我们通过<code>extract-text-webpack-plugin</code>插件，把css样式从js文件中提取到单独的css文件中。
+<ul>
+<li>但这需要额外的http请求</li>
+<li>更长的编译时间</li>
+<li>没有热替换</li>
+<li>CSS请求并行</li>
+</ul>
+</li>
+<li><code>optimize-css-assets-webpack-plugin</code>进行压缩css,使用此方法压缩了css需要<code>uglifyjs-webpack-plugin</code>压缩js</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">// 简单版本style-loader,css-loader</span>
+<span class="hljs-built_in">module</span>: {
+  <span class="hljs-attr">rules</span>: [
+    {
+      <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>,
+      <span class="hljs-attr">use</span>: [
+        {
+          <span class="hljs-attr">loader</span>: <span class="hljs-string">'style-loader'</span>,
+          <span class="hljs-attr">options</span>: {
+            <span class="hljs-attr">insertAt</span>: <span class="hljs-string">'top'</span> <span class="hljs-comment">// 将css标签插入最顶头  这样可以自定义style不被覆盖</span>
+          }
+        },
+        <span class="hljs-string">'css-loader'</span>,
+        <span class="hljs-string">'postcss-loader'</span>
+      ]
+    }
+  ]
+}
+<span class="hljs-comment">// 高级版本： MiniCssExtractPlugin css-loader</span>
+<span class="hljs-keyword">const</span> MiniCssExtractPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mini-css-extract-plugin'</span>)
+<span class="hljs-keyword">const</span> devMode = process.env.NODE_ENV !== <span class="hljs-string">'production'</span> <span class="hljs-comment">// MiniCssExtractPlugin只在production模式下</span>
+<span class="hljs-built_in">module</span>: {
+  <span class="hljs-attr">rules</span>: [
+    {
+      <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>,
+      <span class="hljs-attr">use</span>: [
+        devMode ? <span class="hljs-string">'style-loader'</span> : MiniCssExtractPlugin.loader,
+        <span class="hljs-string">'css-loader'</span>,
+        <span class="hljs-string">'postcss-loader'</span> <span class="hljs-comment">// 给css加上兼容浏览器的前缀</span>
+      ]
+    }
+  ]
+},
+<span class="hljs-attr">plugins</span>: [
+  <span class="hljs-keyword">new</span> MiniCssExtractPlugin({
+    <span class="hljs-attr">filename</span>: devMode ? <span class="hljs-string">'[name].css'</span> : <span class="hljs-string">'[name].[hash].css'</span>,
+    <span class="hljs-attr">chunkFilename</span>: devMode ? <span class="hljs-string">'[id].css'</span> : <span class="hljs-string">'[id].[hash].css'</span>
+  })
+]
+</div></code></pre>
+<p>用了<code>mini-css-extract-plugin</code>抽离css为link需使用<code>optimize-css-assets-webpack-plugin</code>进行压缩css,使用此方法压缩了css需要<code>uglifyjs-webpack-plugin</code>压缩js</p>
+<pre><code class="language-js"><div><span class="hljs-comment">// 更高级版本：  optimize-css-assets-webpack-plugin MiniCssExtractPlugin UglifyJsPlugin css-loader</span>
+<span class="hljs-keyword">const</span> UglifyJsPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'uglifyjs-webpack-plugin'</span>);
+<span class="hljs-keyword">const</span> MiniCssExtractPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mini-css-extract-plugin'</span>);
+<span class="hljs-keyword">const</span> OptimizeCSSAssetsPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'optimize-css-assets-webpack-plugin'</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">optimization</span>: { <span class="hljs-comment">// 优化项</span>
+     minimizer: [ 
+      <span class="hljs-keyword">new</span> UglifyJsPlugin({
+        <span class="hljs-attr">cache</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 是否缓存</span>
+        parallel: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 是否合并打包</span>
+        sourcMap: <span class="hljs-literal">true</span> <span class="hljs-comment">// 源码映射,可以看源码</span>
+      }),
+      <span class="hljs-keyword">new</span> OptimizeCSSAssetsPlugin({}),
+    ],
+  },
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>,
+        <span class="hljs-attr">use</span>: [
+          devMode ? <span class="hljs-string">'style-loader'</span> : MiniCssExtractPlugin.loader,
+          {<span class="hljs-attr">loader</span>: <span class="hljs-string">'css-loader'</span>,<span class="hljs-attr">options</span>:{<span class="hljs-attr">importLoaders</span>: <span class="hljs-number">1</span>}}, <span class="hljs-comment">// 当postss加载器单独使用时（没有css加载器），不要使用@import</span>
+          {
+            <span class="hljs-attr">loader</span>: <span class="hljs-string">'postcss-loader'</span>,
+            <span class="hljs-attr">options</span>: {
+              <span class="hljs-attr">ident</span>: <span class="hljs-string">'postcss'</span>,
+              <span class="hljs-attr">plugins</span>: <span class="hljs-function">(<span class="hljs-params">loader</span>) =&gt;</span>{
+                <span class="hljs-built_in">require</span>(<span class="hljs-string">'autoprefixer'</span>)({ <span class="hljs-attr">browsers</span>: [<span class="hljs-string">'&gt;0.15% in CN'</span>]}) <span class="hljs-comment">//在中国浏览器类型份额大于0.15%     </span>
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  <span class="hljs-attr">plugins</span>: [
+    <span class="hljs-keyword">new</span> MiniCssExtractPlugin({
+      <span class="hljs-attr">filename</span>: devMode ? <span class="hljs-string">'[name].css'</span> : <span class="hljs-string">'[name].[hash].css'</span>, <span class="hljs-comment">// css文件单独命名，给定哈希值的目的是给定版本，防止浏览器端有相同命名的缓存</span>
+      chunkFilename: devMode ? <span class="hljs-string">'[id].css'</span> : <span class="hljs-string">'[id].[hash].css'</span>
+    }),
+    <span class="hljs-built_in">require</span>(<span class="hljs-string">'autoprefixer'</span>) <span class="hljs-comment">// 浏览器兼容</span>
+  ]
+}
+</div></code></pre>
+<h1 id="10-%e5%a4%84%e7%90%86js">10. 处理js</h1>
+<ul>
+<li>npm i babel-loader @babel/core @babel/preset-env -D</li>
+<li>转class npm i @babel/plugin-proposal-class-properties -D</li>
+<li>转装饰器 npm i @babel/plugin-proposal-decorators -D</li>
+<li>@babel/polyfill</li>
+</ul>
+<h2 id="101-es6%e8%bd%aces5-%e8%bd%aces7%e7%9a%84%e8%af%ad%e6%b3%95-%e5%85%b6%e4%bb%96%e4%b8%8d%e5%85%bc%e5%ae%b9%e7%9a%84%e9%ab%98%e7%ba%a7%e8%af%ad%e6%b3%95">10.1. es6转es5 转es7的语法 其他不兼容的高级语法</h2>
+<pre><code class="language-js"><div><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: {
+          <span class="hljs-attr">loader</span>: <span class="hljs-string">'babel-loader'</span>,
+          <span class="hljs-attr">options</span>: {
+            <span class="hljs-attr">presets</span>: [ <span class="hljs-comment">//预设</span>
+              <span class="hljs-string">'@babel/preset-env'</span> 
+            ],
+            <span class="hljs-attr">plugins</span>:[
+              <span class="hljs-comment">// 转es7的语法</span>
+              [<span class="hljs-string">"@babel/plugin-proposal-decorators"</span>, { <span class="hljs-string">"legacy"</span>: <span class="hljs-literal">true</span> }],
+              [<span class="hljs-string">"@babel/plugin-proposal-class-properties"</span>, { <span class="hljs-string">"loose"</span> : <span class="hljs-literal">true</span> }]
+            ]
+          }
+        },
+        <span class="hljs-attr">exclude</span>: <span class="hljs-regexp">/node_modules/</span> <span class="hljs-comment">// node_modules文件夹除外</span>
+      }
+    ]
+  }
+}
+</div></code></pre>
+<h3 id="1011-%e8%af%ad%e6%b3%95%e6%a3%80%e6%9f%a5eslint">10.1.1. 语法检查eslint</h3>
+<ul>
+<li>根目录添加.eslintrc.json配置文件</li>
+<li>在webpack.config.js添加</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: {
+          <span class="hljs-attr">loader</span>: <span class="hljs-string">'eslint-loader'</span>,
+          <span class="hljs-attr">options</span>: {
+            <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span> <span class="hljs-comment">// 这个loader优先执行，loader还有post normal、内联、行内执行</span>
+          }
+        }
+      },{
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+        <span class="hljs-attr">use</span>: {
+          <span class="hljs-attr">loader</span>: <span class="hljs-string">'bable-loader'</span>,
+          <span class="hljs-attr">options</span>: {
+            <span class="hljs-attr">presets</span>: [
+              <span class="hljs-string">'@babel/preset-env'</span>
+            ]
+          }
+        },
+        <span class="hljs-attr">exclude</span>: <span class="hljs-regexp">/node_modules/</span>
+      }
+    ]
+  }
+}
+</div></code></pre>
+<h1 id="11-%e5%9b%be%e7%89%87%e5%ad%97%e4%bd%93%e5%8a%a0%e8%bd%bdfile-loader%e5%92%8c%e5%9b%be%e7%89%87%e4%bc%98%e5%8c%96url-loader">11. 图片/字体加载file-loader和图片优化url-loader</h1>
+<p>情况：1. 在js中创建 2.css中引入 3.<img src=""></p>
+<ul>
+<li>图片处理file-loader,适合情况1，2，默认会内部生成一张图片到build,生成图片的路径返回回来</li>
+<li>图片处理html-withimg-loader,适合情况3</li>
+<li>图片压缩用url-loader，当图片小于多少，用base64,否则用file-loader产生真实的图片</li>
+<li>图片优化压缩image-webpack-loader,但是image-webpack-loader 依赖了 pngquant，而新版本的 pngquant 已经<strong>不再支持 Windows 了</strong></li>
+</ul>
+<h2 id="111-%e5%9b%be%e7%89%87%e5%a4%84%e7%90%86">11.1. 图片处理</h2>
+<pre><code class="language-js"><div><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">module</span>: {
+    <span class="hljs-attr">rules</span>: [
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.(jpg|jpeg|png|svg|gif)$/</span>,
+        <span class="hljs-attr">use</span>: <span class="hljs-string">'file-loader'</span>,
+      },
+      {
+        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.(woff|woff2|eot|ttf|otf)$/</span>,
+        <span class="hljs-attr">use</span>: <span class="hljs-string">'file-loader'</span>
+      }
+    ]
+  }
+}
+</div></code></pre>
+<p>情况1： 在js中创建</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./logo.png'</span>
+<span class="hljs-keyword">let</span> image = <span class="hljs-keyword">new</span> Image()
+image.src = logo
+<span class="hljs-built_in">document</span>.body.appendChild(image)
+</div></code></pre>
+<p>情况2： 在css中引入,css-loader会将css里面的图片转为require的格式</p>
+<pre><code class="language-js"><div>div {
+  <span class="hljs-attr">background</span>: url(<span class="hljs-string">"./logo.png"</span>);
+}
+</div></code></pre>
+<p>情况3：解析html中的image</p>
+<pre><code class="language-js"><div>{
+  <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.html$/</span>,
+  <span class="hljs-attr">use</span>: <span class="hljs-string">'html-withimg-loader'</span>
+}
+</div></code></pre>
+<h2 id="112-%e5%9b%be%e7%89%87%e5%8e%8b%e7%bc%a9">11.2. 图片压缩</h2>
+<pre><code class="language-js"><div>{
+  <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.(jpg|jpeg|png|svg|gif)$/</span>,
+  <span class="hljs-attr">use</span>: {
+    <span class="hljs-attr">loader</span>: <span class="hljs-string">'url-loader'</span>
+    options: {
+      <span class="hljs-attr">limit</span>: <span class="hljs-number">200</span> * <span class="hljs-number">1024</span>,          <span class="hljs-comment">// 小于200k变成base64</span>
+      <span class="hljs-comment">// outputPath: '/img/',     // 打包后输出地址，就是dist/img</span>
+      <span class="hljs-comment">// publicPath: ''           // 给资源加上域名路径 </span>
+    }
+  }
+}
+</div></code></pre>
+<h1 id="12-%e6%b8%85%e9%99%a4%e7%9b%ae%e5%bd%95%e6%8b%b7%e8%b4%9d%e6%96%87%e4%bb%b6%e5%a4%b9%e7%89%88%e6%9d%83%e5%a3%b0%e6%98%8e">12. 清除目录、拷贝文件夹、版权声明</h1>
+<ul>
+<li>清除目录 npm install clean-webpack-plugin --save-dev</li>
+<li>拷贝文件夹 npm install copy-webpack-plugin --save-dev</li>
+<li>版权声明 production中使用： webpack内置 bannerPlugin</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">const</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack'</span>)
+<span class="hljs-keyword">const</span> CleanWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">"clean-webpack-plugin"</span>)
+<span class="hljs-keyword">const</span> CopyWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">"copy-webpack-plugin"</span>)
+plugins:[
+  <span class="hljs-keyword">new</span> CleanWebpackPlugin(),
+  <span class="hljs-keyword">new</span> CopyWebpackPlugin([{<span class="hljs-attr">from</span>: <span class="hljs-string">'doc'</span>, <span class="hljs-attr">to</span>: <span class="hljs-string">'./'</span>}]) ,<span class="hljs-comment">//doc和输出文件目录dist同级， 将doc文件夹里的内容拷贝到dist文件夹</span>
+  <span class="hljs-keyword">new</span> webpack.BannerPlugin(<span class="hljs-string">'make 2019 by Olivia'</span>) <span class="hljs-comment">// 输出的每个js文件开头都有'make 2019 by Olivia'字符串</span>
+]
+</div></code></pre>
+<h1 id="13-%e5%ae%9a%e4%b9%89%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f">13. 定义环境变量</h1>
+<p>webpack内置的DefinePlugin，可以在src目录下开发使用</p>
+<pre><code class="language-js"><div>plugins: [
+  <span class="hljs-keyword">new</span> webpack.DefinePlugin({
+    <span class="hljs-attr">RULE</span>: <span class="hljs-built_in">JSON</span>.stringfy(<span class="hljs-string">'rule'</span>), <span class="hljs-comment">//字符串需要使用json,或者添加双引号"'rule'" </span>
+    FLAG: <span class="hljs-string">'true'</span> 
+  })
+]
+<span class="hljs-comment">// src/index.js</span>
+<span class="hljs-built_in">console</span>.log(RULE) <span class="hljs-comment">// rule</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> FLAG) <span class="hljs-comment">// boolean</span>
+</div></code></pre>
+<h1 id="14-noparse%e6%9f%90%e4%ba%9b%e5%8c%85%e6%98%af%e7%8b%ac%e7%ab%8b%e7%9a%84%e4%b8%aa%e4%bd%93%e6%b2%a1%e6%9c%89%e4%be%9d%e8%b5%96-include-exclude%e5%8f%aa%e9%9c%80%e8%a6%81%e4%b8%80%e4%ba%9b%e5%8c%85%e7%9a%84%e6%9f%90%e4%ba%9b%e5%8a%9f%e8%83%bd">14. noParse某些包是独立的个体没有依赖, include, exclude，只需要一些包的某些功能</h1>
+<ul>
+<li>noParse: 一些大型库本身没有依赖，就不需要解析，如jQuery，这样做可以减少时间。noParse: 'jquery'</li>
+<li>include：只包含一些目录</li>
+<li>exclude: 不包含某些目录</li>
+<li>只需要一些包的某些功能： webpack内置插件IgnorePlugin</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">// 某些包是独立的个体没有依赖,忽略掉moment的其他语言包</span>
+<span class="hljs-keyword">let</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack'</span>)
+<span class="hljs-built_in">module</span>:{
+  <span class="hljs-attr">noParse</span>: <span class="hljs-regexp">/jquery/</span>,
+  {
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">exclude</span>: <span class="hljs-string">'/node_modules/'</span>,   <span class="hljs-comment">// 排除</span>
+    include: path.resolve(<span class="hljs-string">'src'</span>),  <span class="hljs-comment">// 在这个范围内</span>
+    use: {
+      <span class="hljs-attr">loader</span>: <span class="hljs-string">'babel-loader'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">presets</span>: [
+          <span class="hljs-string">'@babel/preset-env'</span>,
+          <span class="hljs-string">'@babel/preset-react'</span>
+        ]
+      }
+    }
+  }
+},
+<span class="hljs-attr">plugins</span>: [
+    <span class="hljs-keyword">new</span> webpack.IgnorePlugin(<span class="hljs-regexp">/\.\/locale/</span>, /moment/)
+]
+<span class="hljs-comment">// src/index.js</span>
+<span class="hljs-keyword">import</span> moment <span class="hljs-keyword">from</span> <span class="hljs-string">'moment'</span>
+
+<span class="hljs-keyword">let</span> r = moment().endOf(<span class="hljs-string">'day'</span>).fromNow()  <span class="hljs-comment">// 距离现在多少天</span>
+<span class="hljs-built_in">console</span>.log(r);
+<span class="hljs-comment">// 可以将webpck压缩文件从从 1.2MB 到 800kb</span>
+</div></code></pre>
+<h1 id="15-webpackdllreferenceplugin">15. webpack.DllReferencePlugin</h1>
+<ul>
+<li>事先把常用但又构建时间长的代码提前打包好（例如 react、react-dom），取个名字叫 dll。后面再打包的时候就跳过原来的未打包代码，直接用 dll。这样一来，构建时间就会缩短，提高 webpack 打包速度。</li>
+<li><em>Vue 和 React 官方 2018 都不再使用 dll </em></li>
+<li>dll代替品--》<code>HardSourceWebpackPlugin</code></li>
+</ul>
+<pre><code class="language-js"><div>plugins: [
+    <span class="hljs-keyword">new</span> HardSourceWebpackPlugin() <span class="hljs-comment">// &lt;- 直接加入这行代码就行</span>
+  ]
+</div></code></pre>
+<h1 id="16-%e7%bc%a9%e7%9f%ad%e6%89%93%e5%8c%85%e6%97%b6%e9%97%b4%e5%a4%9a%e7%ba%bf%e7%a8%8b%e6%89%93%e5%8c%85happypack">16. 缩短打包时间多线程打包HappyPack</h1>
+<pre><code class="language-js"><div><span class="hljs-comment">// 对js和css进行多线程打包所短打包时间</span>
+<span class="hljs-keyword">let</span> Happypack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'happypack'</span>)
+rules: [
+  {
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js$/</span>,
+    <span class="hljs-attr">exclude</span>: <span class="hljs-string">'/node_modules/'</span>,
+    <span class="hljs-attr">include</span>: path.resolve(<span class="hljs-string">'src'</span>),
+    <span class="hljs-attr">use</span>: <span class="hljs-string">'happypack/loader?id=js'</span>
+  },
+  {
+    <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>,
+    <span class="hljs-attr">use</span>: <span class="hljs-string">'happypack/loader?id=css'</span>
+  }
+]
+
+plugins: [
+  <span class="hljs-keyword">new</span> Happypack({
+    <span class="hljs-attr">id</span>: <span class="hljs-string">'js'</span>,
+    <span class="hljs-attr">use</span>: [{
+      <span class="hljs-attr">loader</span>: <span class="hljs-string">'babel-loader'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">presets</span>: [
+          <span class="hljs-string">'@babel/preset-env'</span>,
+          <span class="hljs-string">'@babel/preset-react'</span>
+        ]
+      }
+    }]
+  }),
+  <span class="hljs-keyword">new</span> Happypack({
+    <span class="hljs-attr">id</span>: <span class="hljs-string">'css'</span>,
+    <span class="hljs-attr">use</span>: [<span class="hljs-string">'style-loader'</span>, <span class="hljs-string">'css-loader'</span>]
+  })
+]
+</div></code></pre>
+<h1 id="17-webpack%e8%87%aa%e5%b8%a6%e7%9a%84%e4%bc%98%e5%8c%96">17. webpack自带的优化</h1>
+<p>在production才会生效:tree-shaking scope-hosting</p>
+<ul>
+<li>tree-shaking: 自动删除没用的代码，只对import有效，require无效</li>
+<li>scope-hosting: 作用域提升</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">import</span> calc <span class="hljs-keyword">from</span> <span class="hljs-string">'./test'</span>
+<span class="hljs-built_in">console</span>.log(calc.sum(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>))
+<span class="hljs-comment">// 若是require，是一个default的对象</span>
+<span class="hljs-keyword">let</span> calc = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./test'</span>)
+<span class="hljs-built_in">console</span>.log(calc.default.sum(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>)) <span class="hljs-comment">// 会将结果放在default下， console.log(r.default.sum(1,2))</span>
+<span class="hljs-comment">// scope-hosting</span>
+<span class="hljs-keyword">let</span> a =<span class="hljs-number">1</span>
+<span class="hljs-keyword">let</span> b = <span class="hljs-number">1</span>
+<span class="hljs-keyword">let</span> c = <span class="hljs-number">1</span>
+<span class="hljs-keyword">let</span> d = a+b+c
+<span class="hljs-built_in">console</span>.log(d, <span class="hljs-string">'---------'</span>)
+<span class="hljs-comment">// webpack会自动打包，省掉一些代码，简化为console.log(3,"---------")</span>
+</div></code></pre>
+<h1 id="18-%e6%a8%a1%e5%9d%97%e8%a7%a3%e6%9e%90">18. 模块解析</h1>
+<h2 id="181-resolve">18.1. resolve</h2>
+<ul>
+<li>功能：
+<ul>
+<li>处理模块查找位置；</li>
+<li>处理 import 后缀简写；</li>
+<li>处理模块默认引用文件，默认为 main.js</li>
+</ul>
+</li>
+<li>配置方式：
+<ul>
+<li>modules 指定模块目录</li>
+<li>mainFields 指定目录顺序</li>
+<li>mainFiles 指定入口文件</li>
+<li>alias 指定别名对应的入口文件</li>
+<li>estensions</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><div>modules.export = {
+  <span class="hljs-attr">resolve</span>: {
+    <span class="hljs-comment">// 指定模块目录，当前node_modules目录下寻找，若不指定则会一直往上寻找</span>
+    modules: [path.resolve(<span class="hljs-string">'node_modules'</span>)],
+    <span class="hljs-comment">// 指定目录顺序，现在style目录下寻找，找不到再到main目录</span>
+    mainFields: [<span class="hljs-string">'style'</span>, <span class="hljs-string">'main'</span>],
+    <span class="hljs-comment">// 指定入口文件</span>
+    mainFiles: [<span class="hljs-string">'index.js'</span>],
+    <span class="hljs-comment">// 指定别名对应的引入文件</span>
+    alias: {
+      <span class="hljs-attr">components</span>: <span class="hljs-string">'src/components/'</span>
+    }
+    <span class="hljs-comment">// 省略文件扩展名，默认按序号顺序查找</span>
+    extensions: [<span class="hljs-string">'.vue'</span>, <span class="hljs-string">'.js'</span>, <span class="hljs-string">'.css'</span>]
+  }
+}
+</div></code></pre>
+<h2 id="182-resolveloader">18.2. resolveLoader</h2>
+<ul>
+<li>功能：处理 loader 查找位置</li>
+<li>配置方式：
+<ul>
+<li>modules</li>
+<li>alias</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><div>modules.exports = {
+  <span class="hljs-comment">//...</span>
+  resolveLoader: {
+    <span class="hljs-comment">// 指定loader查找目录,node_modules 找不到，再去 loaders 目录查找</span>
+    modules: [path.resolve(<span class="hljs-string">"node_modules"</span>), path.resolve(__dirname, <span class="hljs-string">'loaders'</span>)],
+    <span class="hljs-comment">// 通过别名的方式指定 loader 文件路径</span>
+    alias: {
+      <span class="hljs-attr">myLoader</span>: path.resolve(__dirname, <span class="hljs-string">'loaders'</span>, <span class="hljs-string">'myLoader.js'</span>)
+    }
+  }
+}
+</div></code></pre>
+<h2 id="183-devtool%e7%9a%84sourcemapwebpack%e5%86%85%e7%bd%ae">18.3. devtool的sourceMap（webpack内置）</h2>
+<p>| 类型 | 功能 |
+| source-map | 增加映射文件，会标识错误的代码 打包后生成独立的文件， 大而全 |
+| eval-source-map | 无单独文件，可显示行列 |
+| cheap-module-source-map | 单独映射文件，产生后可以保存起来调试，有行无列 |
+| cheap-module-eval-source-map | 不会产生文件 集成在打包后的文件中，有行无列 |</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">devtool</span>: <span class="hljs-string">'source-map'</span> <span class="hljs-comment">// 增加映射文件调试源代码</span>
+}
+</div></code></pre>
+<h2 id="184-watch-%e5%90%af%e5%8a%a8%e7%9b%91%e6%8e%a7%e8%87%aa%e5%8a%a8%e7%bc%96%e8%af%91">18.4. watch 启动监控自动编译</h2>
+<p>在package.json脚本里添加--watch</p>
+<ul>
+<li>aggregateTimeout <em>防抖</em>当第一个文件更改，会在重新构建前增加延迟</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">//package.json "script": {"build"： "npx webpack --watch --config webpack.dev.js"}</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">watch</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">watchOptions</span>: {
+    <span class="hljs-attr">poll</span>: <span class="hljs-number">1000</span>,              <span class="hljs-comment">// 每秒监听1000次</span>
+    aggregateTimeout: <span class="hljs-number">300</span>,   <span class="hljs-comment">// 防抖，一直输入代码，当第一个文件更改，会在重新构建前增加延迟</span>
+    ignored: <span class="hljs-regexp">/node_modules/</span>  <span class="hljs-comment">// 对于某些系统，监听大量文件系统会导致大量的 CPU 或内存占用。这个选项可以排除一些巨大的文件夹，</span>
+  },
+}
+</div></code></pre>
+<h1 id="19-%e5%89%8d%e5%90%8e%e7%ab%af%e6%8e%a5%e5%8f%a3%e8%b0%83%e8%af%95">19. 前后端接口调试</h1>
+<ol>
+<li>proxy
+webpack-dev-server有处理跨越的proxy，把请求代理到express服务器</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-comment">// node.js</span>
+<span class="hljs-keyword">let</span> xhr = <span class="hljs-keyword">new</span> XMLHttpRequest()
+xhr.open(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/api/user'</span>, <span class="hljs-literal">true</span>)
+xhr.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(xhr.response)
+}
+xhr.send()
+<span class="hljs-comment">// webpack.config.js</span>
+devServer: {
+  <span class="hljs-attr">proxy</span>: { <span class="hljs-comment">//配置代理 </span>
+    target: <span class="hljs-string">'http://localhost:3000'</span>, <span class="hljs-comment">// 目标url,webpack-dev-server默认端口8080，</span>
+    pathRewrite: {<span class="hljs-string">'^/api'</span>: <span class="hljs-string">''</span>} 
+  }
+}
+</div></code></pre>
+<ol start="2">
+<li>mock数据（没有跨域了）
+前端自己mock数据，webpack本身就含有express，和webpack-dev-server在同一个端口下</li>
+</ol>
+<pre><code class="language-js"><div>devServer: {
+  before(app) {
+    app.get(<span class="hljs-string">'/user'</span>,(req, res) =&gt; {
+      res.json({<span class="hljs-attr">name</span>: <span class="hljs-string">'Olivia'</span>})
+    })
+  }
+}
+</div></code></pre>
+<ol start="3">
+<li>中间件共享端口 webpack-dev-middleware
+有服务端，不想用代理处理，在服务器端启动webpack,即webpack端口用服务器端口</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-comment">// node.js</span>
+<span class="hljs-keyword">let</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>)
+<span class="hljs-keyword">let</span> app = express()
+<span class="hljs-keyword">let</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack'</span>)
+<span class="hljs-keyword">let</span> middle = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack-dev-middleware'</span>)
+<span class="hljs-keyword">let</span> config = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./webpack.config.js'</span>)
+<span class="hljs-keyword">let</span> compiler = webpack(config)
+app.use(middle(compiler))
+app.get(<span class="hljs-string">'/user'</span>, (req, res) =&gt; {
+  res.json({<span class="hljs-attr">name</span>: <span class="hljs-string">'Olivia'</span>})
+})
+app.listen(<span class="hljs-number">3000</span>)
+</div></code></pre>
+
+    </body>
+    </html>

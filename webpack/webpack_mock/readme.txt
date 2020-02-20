@@ -1,0 +1,2 @@
+由于已经在webpackOlivia里创建了bin,配置了package.json，让webpackOlivia项目在node环境中运行，运行npm link将npm 模块链接到对应的运行项目中去，方便地对模块进行调试和测试,因此可以在webpackMock对webpackOlivia进行调试。
+手写webpack:实现AST递归解析，使用ejs模板生成打包工具，增加loader和plugins。
