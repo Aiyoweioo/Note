@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>0.1. 两种回调函数</title>
+        <title>1. 两种回调函数</title>
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
@@ -22,37 +22,37 @@
     </head>
     <body class="vscode-light">
         <ul>
-<li><a href="#01-%e4%b8%a4%e7%a7%8d%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">0.1. 两种回调函数</a></li>
-<li><a href="#02-error">0.2. Error</a>
+<li><a href="#1-%e4%b8%a4%e7%a7%8d%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">1. 两种回调函数</a></li>
+<li><a href="#2-error">2. Error</a>
 <ul>
-<li><a href="#021-%e5%b8%b8%e8%a7%81%e5%86%85%e7%bd%ae%e9%94%99%e8%af%af">0.2.1. 常见内置错误</a></li>
-<li><a href="#022-%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">0.2.2. 错误处理</a></li>
+<li><a href="#21-%e5%b8%b8%e8%a7%81%e5%86%85%e7%bd%ae%e9%94%99%e8%af%af">2.1. 常见内置错误</a></li>
+<li><a href="#22-%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">2.2. 错误处理</a></li>
 </ul>
 </li>
-<li><a href="#03-%e4%bb%80%e4%b9%88%e6%98%afpromise">0.3. 什么是Promise</a></li>
-<li><a href="#04-promise%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8">0.4. Promise基本使用</a></li>
-<li><a href="#05-%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e7%94%a8promise">0.5. 为什么要用Promise</a></li>
-<li><a href="#06-promise%e7%9a%84api">0.6. Promise的API</a></li>
-<li><a href="#07-promise%e7%9a%84%e5%87%a0%e4%b8%aa%e5%85%b3%e9%94%ae%e9%97%ae%e9%a2%98">0.7. promise的几个关键问题</a>
+<li><a href="#3-%e4%bb%80%e4%b9%88%e6%98%afpromise">3. 什么是Promise</a></li>
+<li><a href="#4-promise%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8">4. Promise基本使用</a></li>
+<li><a href="#5-%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e7%94%a8promise">5. 为什么要用Promise</a></li>
+<li><a href="#6-promise%e7%9a%84api">6. Promise的API</a></li>
+<li><a href="#7-promise%e7%9a%84%e5%87%a0%e4%b8%aa%e5%85%b3%e9%94%ae%e9%97%ae%e9%a2%98">7. promise的几个关键问题</a>
 <ul>
-<li><a href="#071-error%e5%b1%9e%e4%ba%8epromise%e5%93%aa%e4%b8%aa%e7%8a%b6%e6%80%81">0.7.1. error属于promise哪个状态</a></li>
-<li><a href="#072-%e4%b8%80%e4%b8%aapromise%e6%8c%87%e5%ae%9a%e5%a4%9a%e4%b8%aa%e6%88%90%e5%8a%9f%e5%a4%b1%e8%b4%a5%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">0.7.2. 一个promise指定多个成功/失败回调函数</a></li>
-<li><a href="#073-%e7%8a%b6%e6%80%81%e6%94%b9%e5%8f%98%e4%b8%8e%e6%8c%87%e5%ae%9a%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%85%88%e5%90%8e%e6%ac%a1%e5%ba%8f">0.7.3. 状态改变与指定回调函数的先后次序</a></li>
-<li><a href="#074-promisethen%e8%bf%94%e5%9b%9e%e7%9a%84%e6%96%b0promise%e7%9a%84%e7%bb%93%e6%9e%9c%e7%8a%b6%e6%80%81%e7%94%b1%e4%bb%80%e4%b9%88%e5%86%b3%e5%ae%9a%e9%87%8d%e7%82%b9">0.7.4. promise.then()返回的新promise的结果状态由什么决定(重点)</a></li>
-<li><a href="#075-%e5%a6%82%e4%bd%95%e4%b8%b2%e8%81%94%e5%a4%9a%e4%b8%aa%e6%93%8d%e4%bd%9c%e4%bb%bb%e5%8a%a1">0.7.5. 如何<em>串联</em>多个操作任务</a></li>
-<li><a href="#076-%e5%bc%82%e5%b8%b8%e4%bc%a0%e9%80%8f">0.7.6. 异常传透</a></li>
-<li><a href="#077-%e4%b8%ad%e6%96%adpromise%e9%93%be">0.7.7. 中断Promise链</a></li>
+<li><a href="#71-error%e5%b1%9e%e4%ba%8epromise%e5%93%aa%e4%b8%aa%e7%8a%b6%e6%80%81">7.1. error属于promise哪个状态</a></li>
+<li><a href="#72-%e4%b8%80%e4%b8%aapromise%e6%8c%87%e5%ae%9a%e5%a4%9a%e4%b8%aa%e6%88%90%e5%8a%9f%e5%a4%b1%e8%b4%a5%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">7.2. 一个promise指定多个成功/失败回调函数</a></li>
+<li><a href="#73-%e7%8a%b6%e6%80%81%e6%94%b9%e5%8f%98%e4%b8%8e%e6%8c%87%e5%ae%9a%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%85%88%e5%90%8e%e6%ac%a1%e5%ba%8f">7.3. 状态改变与指定回调函数的先后次序</a></li>
+<li><a href="#74-promisethen%e8%bf%94%e5%9b%9e%e7%9a%84%e6%96%b0promise%e7%9a%84%e7%bb%93%e6%9e%9c%e7%8a%b6%e6%80%81%e7%94%b1%e4%bb%80%e4%b9%88%e5%86%b3%e5%ae%9a%e9%87%8d%e7%82%b9">7.4. promise.then()返回的新promise的结果状态由什么决定(重点)</a></li>
+<li><a href="#75-%e5%a6%82%e4%bd%95%e4%b8%b2%e8%81%94%e5%a4%9a%e4%b8%aa%e6%93%8d%e4%bd%9c%e4%bb%bb%e5%8a%a1">7.5. 如何<em>串联</em>多个操作任务</a></li>
+<li><a href="#76-%e5%bc%82%e5%b8%b8%e4%bc%a0%e9%80%8f">7.6. 异常传透</a></li>
+<li><a href="#77-%e4%b8%ad%e6%96%adpromise%e9%93%be">7.7. 中断Promise链</a></li>
 </ul>
 </li>
-<li><a href="#08-async-function%e5%92%8cawait-expression">0.8. async function和await expression</a></li>
-<li><a href="#09-%e5%ae%8f%e9%98%9f%e5%88%97%e5%92%8c%e5%be%ae%e9%98%9f%e5%88%97">0.9. 宏队列和微队列</a></li>
-<li><a href="#010-%e9%9d%a2%e8%af%95%e9%a2%981">0.10. 面试题1</a></li>
-<li><a href="#011-%e9%9d%a2%e8%af%95%e9%a2%982">0.11. 面试题2</a></li>
-<li><a href="#012-%e9%9d%a2%e8%af%95%e9%a2%983">0.12. 面试题3</a></li>
-<li><a href="#013-%e9%9d%a2%e8%af%95%e9%a2%984">0.13. 面试题4</a></li>
+<li><a href="#8-async-function%e5%92%8cawait-expression">8. async function和await expression</a></li>
+<li><a href="#9-%e5%ae%8f%e9%98%9f%e5%88%97%e5%92%8c%e5%be%ae%e9%98%9f%e5%88%97">9. 宏队列和微队列</a></li>
+<li><a href="#10-%e9%9d%a2%e8%af%95%e9%a2%981">10. 面试题1</a></li>
+<li><a href="#11-%e9%9d%a2%e8%af%95%e9%a2%982">11. 面试题2</a></li>
+<li><a href="#12-%e9%9d%a2%e8%af%95%e9%a2%983">12. 面试题3</a></li>
+<li><a href="#13-%e9%9d%a2%e8%af%95%e9%a2%984">13. 面试题4</a></li>
 </ul>
 <p>参考：<a href="https://github.com/dslu7733/promise/blob/master/promise">https://github.com/dslu7733/promise/blob/master/promise</a></p>
-<h2 id="01-%e4%b8%a4%e7%a7%8d%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">0.1. 两种回调函数</h2>
+<h1 id="1-%e4%b8%a4%e7%a7%8d%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">1. 两种回调函数</h1>
 <ul>
 <li>同步回调：立即执行，直到执行结束。不会放到回调队列。例子：数组遍历相关的回调函数，Promise的excutor函数</li>
 <li>异步回调：不立即执行，而是放到回调队列中将来执行。例子： 定时器回调，ajax回调，Promise的成功|失败的回调
@@ -76,7 +76,7 @@ setTimeout( <span class="hljs-function"><span class="hljs-params">()</span> =&gt
 
 <span class="hljs-comment">//判断是同步还是异步，再最后加一个console.log</span>
 </div></code></pre>
-<h2 id="02-error">0.2. Error</h2>
+<h1 id="2-error">2. Error</h1>
 <p>参考MDN <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></p>
 <ul>
 <li>错误类型</li>
@@ -104,7 +104,7 @@ setTimeout( <span class="hljs-function"><span class="hljs-params">()</span> =&gt
 </ol>
 </li>
 </ul>
-<h3 id="021-%e5%b8%b8%e8%a7%81%e5%86%85%e7%bd%ae%e9%94%99%e8%af%af">0.2.1. 常见内置错误</h3>
+<h2 id="21-%e5%b8%b8%e8%a7%81%e5%86%85%e7%bd%ae%e9%94%99%e8%af%af">2.1. 常见内置错误</h2>
 <pre><code class="language-js"><div><span class="hljs-comment">//ReferenceError: 引用变量不存在</span>
 <span class="hljs-built_in">console</span>.log(a) <span class="hljs-comment">//ReferenceError: a is not defined</span>
 
@@ -130,7 +130,7 @@ fn()  <span class="hljs-comment">//RangeError: Maximum call stack size exceeded<
  ctrl+` : 回到终端
 */</span>
 </div></code></pre>
-<h3 id="022-%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">0.2.2. 错误处理</h3>
+<h2 id="22-%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">2.2. 错误处理</h2>
 <pre><code class="language-js"><div><span class="hljs-comment">//错误捕获</span>
 <span class="hljs-keyword">try</span> {
   <span class="hljs-keyword">let</span> d
@@ -162,7 +162,7 @@ something() <span class="hljs-comment">//Error: 当前时间为偶数无法执�
   <span class="hljs-built_in">console</span>.log(error.message)
 }
 </div></code></pre>
-<h2 id="03-%e4%bb%80%e4%b9%88%e6%98%afpromise">0.3. 什么是Promise</h2>
+<h1 id="3-%e4%bb%80%e4%b9%88%e6%98%afpromise">3. 什么是Promise</h1>
 <ul>
 <li>Promise是JS中进行异步编程的新的解决方案
 <ol>
@@ -185,7 +185,7 @@ something() <span class="hljs-comment">//Error: 当前时间为偶数无法执�
                                 失败,执行reject()  &gt; <span class="hljs-built_in">Promise</span>对象(rejected状态)  &gt; 回调onRejected()           
                                                                                then()/<span class="hljs-keyword">catch</span>()              
 </div></code></pre>
-<h2 id="04-promise%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8">0.4. Promise基本使用</h2>
+<h1 id="4-promise%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8">4. Promise基本使用</h1>
 <ol>
 <li>创建一个新的promise对象</li>
 <li>执行异步操作任务</li>
@@ -219,7 +219,7 @@ p.then(
   }
 )
 </div></code></pre>
-<h2 id="05-%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e7%94%a8promise">0.5. 为什么要用Promise</h2>
+<h1 id="5-%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e7%94%a8promise">5. 为什么要用Promise</h1>
 <p>对比不同回调方式(伪代码)</p>
 <ol>
 <li>指定回调方式更加灵活，就是时间问题
@@ -288,7 +288,7 @@ doSomething().then(<span class="hljs-function"><span class="hljs-keyword">functi
   }
 }
 </div></code></pre>
-<h2 id="06-promise%e7%9a%84api">0.6. Promise的API</h2>
+<h1 id="6-promise%e7%9a%84api">6. Promise的API</h1>
 <ol>
 <li>Promise构造函数： Promise(exscutor) { }</li>
 </ol>
@@ -388,8 +388,8 @@ pRace.then(
   }
 )
 </div></code></pre>
-<h2 id="07-promise%e7%9a%84%e5%87%a0%e4%b8%aa%e5%85%b3%e9%94%ae%e9%97%ae%e9%a2%98">0.7. promise的几个关键问题</h2>
-<h3 id="071-error%e5%b1%9e%e4%ba%8epromise%e5%93%aa%e4%b8%aa%e7%8a%b6%e6%80%81">0.7.1. error属于promise哪个状态</h3>
+<h1 id="7-promise%e7%9a%84%e5%87%a0%e4%b8%aa%e5%85%b3%e9%94%ae%e9%97%ae%e9%a2%98">7. promise的几个关键问题</h1>
+<h2 id="71-error%e5%b1%9e%e4%ba%8epromise%e5%93%aa%e4%b8%aa%e7%8a%b6%e6%80%81">7.1. error属于promise哪个状态</h2>
 <pre><code class="language-js"><div><span class="hljs-keyword">const</span> p = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>)=&gt;</span>{
   <span class="hljs-comment">// throw new Error('出错了') //抛出异常， promse变为 rejected失败状态,reason为抛出的error</span>
   <span class="hljs-keyword">throw</span> <span class="hljs-number">3</span> <span class="hljs-comment">// 地出异常,promise变为rejected状态， reason为抛出的3</span>
@@ -400,7 +400,7 @@ p.then(
   reason =&gt; { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'reason'</span>, reason) } <span class="hljs-comment">//reason Error: 出错了</span>
 )
 </div></code></pre>
-<h3 id="072-%e4%b8%80%e4%b8%aapromise%e6%8c%87%e5%ae%9a%e5%a4%9a%e4%b8%aa%e6%88%90%e5%8a%9f%e5%a4%b1%e8%b4%a5%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">0.7.2. 一个promise指定多个成功/失败回调函数</h3>
+<h2 id="72-%e4%b8%80%e4%b8%aapromise%e6%8c%87%e5%ae%9a%e5%a4%9a%e4%b8%aa%e6%88%90%e5%8a%9f%e5%a4%b1%e8%b4%a5%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0">7.2. 一个promise指定多个成功/失败回调函数</h2>
 <p>当promise改变为对应状态时都会调用</p>
 <pre><code class="language-js"><div><span class="hljs-keyword">const</span> p2 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>)=&gt;</span>{
   <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'出错了'</span>) <span class="hljs-comment">//属于reject状态</span>
@@ -413,7 +413,7 @@ p2.then(
   <span class="hljs-function"><span class="hljs-params">reason2</span> =&gt;</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'reason2'</span>, reason2) }  <span class="hljs-comment">//reason2 undefined</span>
 )
 </div></code></pre>
-<h3 id="073-%e7%8a%b6%e6%80%81%e6%94%b9%e5%8f%98%e4%b8%8e%e6%8c%87%e5%ae%9a%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%85%88%e5%90%8e%e6%ac%a1%e5%ba%8f">0.7.3. 状态改变与指定回调函数的先后次序</h3>
+<h2 id="73-%e7%8a%b6%e6%80%81%e6%94%b9%e5%8f%98%e4%b8%8e%e6%8c%87%e5%ae%9a%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%85%88%e5%90%8e%e6%ac%a1%e5%ba%8f">7.3. 状态改变与指定回调函数的先后次序</h2>
 <ul>
 <li>都有可能，正常情况下是先指定回调再改变状态，但也可先改变状态再指定回调</li>
 <li>如何先改变状态再指定回调？
@@ -448,7 +448,7 @@ p2.then(
 )
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'-----'</span>)  <span class="hljs-comment">//先输出----, 再输出value 1</span>
 </div></code></pre>
-<h3 id="074-promisethen%e8%bf%94%e5%9b%9e%e7%9a%84%e6%96%b0promise%e7%9a%84%e7%bb%93%e6%9e%9c%e7%8a%b6%e6%80%81%e7%94%b1%e4%bb%80%e4%b9%88%e5%86%b3%e5%ae%9a%e9%87%8d%e7%82%b9">0.7.4. promise.then()返回的新promise的结果状态由什么决定(重点)</h3>
+<h2 id="74-promisethen%e8%bf%94%e5%9b%9e%e7%9a%84%e6%96%b0promise%e7%9a%84%e7%bb%93%e6%9e%9c%e7%8a%b6%e6%80%81%e7%94%b1%e4%bb%80%e4%b9%88%e5%86%b3%e5%ae%9a%e9%87%8d%e7%82%b9">7.4. promise.then()返回的新promise的结果状态由什么决定(重点)</h2>
 <ul>
 <li>简单表达:由then()指定的回调函数执行的结果決定</li>
 <li>详细表达：
@@ -499,7 +499,7 @@ p2.then(
   }
 )
 </div></code></pre>
-<h3 id="075-%e5%a6%82%e4%bd%95em%e4%b8%b2%e8%81%94em%e5%a4%9a%e4%b8%aa%e6%93%8d%e4%bd%9c%e4%bb%bb%e5%8a%a1">0.7.5. 如何<em>串联</em>多个操作任务</h3>
+<h2 id="75-%e5%a6%82%e4%bd%95em%e4%b8%b2%e8%81%94em%e5%a4%9a%e4%b8%aa%e6%93%8d%e4%bd%9c%e4%bb%bb%e5%8a%a1">7.5. 如何<em>串联</em>多个操作任务</h2>
 <ul>
 <li>promise的then()返回一个新的promise，可以看成then()的链式调用</li>
 <li>通过then的链式调用串联多个同步/异步任务</li>
@@ -564,7 +564,7 @@ onRejected1() 1
 onResolved2() undefined
 */</span>
 </div></code></pre>
-<h3 id="076-%e5%bc%82%e5%b8%b8%e4%bc%a0%e9%80%8f">0.7.6. 异常传透</h3>
+<h2 id="76-%e5%bc%82%e5%b8%b8%e4%bc%a0%e9%80%8f">7.6. 异常传透</h2>
 <ul>
 <li>当使用promise的then链式调用时，可以在最后指定失败的回调</li>
 <li>前面任何操作出现了异常，都会传到最后失败的回调中处理</li>
@@ -591,7 +591,7 @@ onResolved2() undefined
 })
 <span class="hljs-comment">// reason =&gt; {throw reason}的{}不能省略，因为=&gt;同时还包含return的意思，但是throw前面不能有return </span>
 </div></code></pre>
-<h3 id="077-%e4%b8%ad%e6%96%adpromise%e9%93%be">0.7.7. 中断Promise链</h3>
+<h2 id="77-%e4%b8%ad%e6%96%adpromise%e9%93%be">7.7. 中断Promise链</h2>
 <ul>
 <li>当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数</li>
 <li>办法： 在回调函数中返回一个pending状态的promise对象</li>
@@ -623,7 +623,7 @@ onResolved2() undefined
 onRejected1() 1
 */</span>
 </div></code></pre>
-<h2 id="08-async-function%e5%92%8cawait-expression">0.8. async function和await expression</h2>
+<h1 id="8-async-function%e5%92%8cawait-expression">8. async function和await expression</h1>
 <ol>
 <li>async function (function return Promise)</li>
 </ol>
@@ -709,7 +709,7 @@ fn3()
 
 fn5()
 </div></code></pre>
-<h2 id="09-%e5%ae%8f%e9%98%9f%e5%88%97%e5%92%8c%e5%be%ae%e9%98%9f%e5%88%97">0.9. 宏队列和微队列</h2>
+<h1 id="9-%e5%ae%8f%e9%98%9f%e5%88%97%e5%92%8c%e5%be%ae%e9%98%9f%e5%88%97">9. 宏队列和微队列</h1>
 <ul>
 <li>宏队列： dom事件回调，ajax回调，定时器回调</li>
 <li>微队列： promise回调，mutationObserver回调</li>
@@ -773,7 +773,7 @@ Promise callback3() 1 // 每次做宏任务之前，先将微任务完成
 timeout callback2()
  * /
 </span></div></code></pre>
-<h2 id="010-%e9%9d%a2%e8%af%95%e9%a2%981">0.10. 面试题1</h2>
+<h1 id="10-%e9%9d%a2%e8%af%95%e9%a2%981">10. 面试题1</h1>
 <p>考点： 同步-&gt;微队列-&gt;宏队列</p>
 <pre><code class="language-js"><div>setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>)
@@ -787,7 +787,7 @@ timeout callback2()
 <span class="hljs-built_in">console</span>.log(<span class="hljs-number">4</span>)
 <span class="hljs-comment">/*4231*/</span>
 </div></code></pre>
-<h2 id="011-%e9%9d%a2%e8%af%95%e9%a2%982">0.11. 面试题2</h2>
+<h1 id="11-%e9%9d%a2%e8%af%95%e9%a2%982">11. 面试题2</h1>
 <pre><code class="language-js"><div>setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>)
 })
@@ -802,7 +802,7 @@ timeout callback2()
 <span class="hljs-built_in">console</span>.log(<span class="hljs-number">5</span>)
 <span class="hljs-comment">/*25341,3执行了才放4进微队列*/</span>
 </div></code></pre>
-<h2 id="012-%e9%9d%a2%e8%af%95%e9%a2%983">0.12. 面试题3</h2>
+<h1 id="12-%e9%9d%a2%e8%af%95%e9%a2%983">12. 面试题3</h1>
 <pre><code class="language-js"><div><span class="hljs-keyword">const</span> first = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
   <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>) <span class="hljs-comment">// 同步</span>
   <span class="hljs-keyword">let</span> p = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
@@ -827,7 +827,7 @@ first().then(<span class="hljs-function">(<span class="hljs-params">arg</span>) 
 微： [1,2]
 */</span>
 </div></code></pre>
-<h2 id="013-%e9%9d%a2%e8%af%95%e9%a2%984">0.13. 面试题4</h2>
+<h1 id="13-%e9%9d%a2%e8%af%95%e9%a2%984">13. 面试题4</h1>
 <pre><code class="language-js"><div>setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"0"</span>)
 }, <span class="hljs-number">0</span>)

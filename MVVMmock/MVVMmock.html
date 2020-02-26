@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1. MVVM mock</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <ul>
+<li><a href="#1-mvvm-mock">1. MVVM mock</a></li>
+<li><a href="#2-mvvm%e5%85%a5%e5%8f%a3">2. MVVM入口</a></li>
+<li><a href="#3-%e6%8c%87%e4%bb%a4%e8%a7%a3%e6%9e%90%e5%99%a8compiler">3. 指令解析器Compiler</a>
+<ul>
+<li><a href="#31-%e5%88%9b%e5%bb%ba%e6%96%87%e6%a1%a3%e5%af%b9%e8%b1%a1">3.1. 创建文档对象</a></li>
+<li><a href="#32-%e7%bc%96%e8%af%91%e6%a8%a1%e6%9d%bf">3.2. 编译模板</a></li>
+<li><a href="#33-%e7%bc%96%e8%af%91%e5%85%83%e7%b4%a0%e8%8a%82%e7%82%b9">3.3. 编译元素节点</a></li>
+<li><a href="#34-%e7%bc%96%e8%af%91%e6%96%87%e6%9c%ac%e8%8a%82%e7%82%b9">3.4. 编译文本节点</a></li>
+</ul>
+</li>
+<li><a href="#4-%e5%ae%9e%e7%8e%b0%e4%b8%80%e4%b8%aa%e6%95%b0%e6%8d%ae%e7%9b%91%e5%90%ac%e5%99%a8observer">4. 实现一个数据监听器Observer</a>
+<ul>
+<li><a href="#41-%e7%9b%91%e5%90%ac%e6%95%b0%e6%8d%ae">4.1. 监听数据</a></li>
+<li><a href="#42-%e6%95%b0%e6%8d%ae%e5%8a%ab%e6%8c%81%e5%b9%b6%e9%80%9a%e7%9f%a5%e4%be%9d%e8%b5%96%e6%94%b6%e9%9b%86%e5%99%a8dep%e9%80%9a%e7%9f%a5watcher%e5%8e%bb%e6%9b%b4%e6%96%b0">4.2. 数据劫持并通知依赖收集器Dep通知Watcher去更新</a></li>
+</ul>
+</li>
+<li><a href="#5-%e5%b1%9e%e6%80%a7%e8%ae%a2%e9%98%85%e5%99%a8dep">5. 属性订阅器Dep</a></li>
+<li><a href="#6-%e8%a7%82%e5%af%9f%e8%80%85watcher">6. 观察者Watcher</a></li>
+<li><a href="#7-%e6%95%b0%e6%8d%ae%e4%bb%a3%e7%90%86">7. 数据代理</a></li>
+</ul>
+<h1 id="1-mvvm-mock">1. MVVM mock</h1>
+<ul>
+<li>实现的功能：</li>
+</ul>
+<ol>
+<li>能够解析指令，根据修改的数据更新视图
+<ul>
+<li>{{<a href="http://person.name">person.name</a>}} -- {{person.age}}</li>
+<li>v-text</li>
+<li>v-html</li>
+<li>v-model：双向数据绑定</li>
+<li>v-on</li>
+<li>@事件</li>
+</ul>
+</li>
+<li>实现数据代理
+在编写js代码时，写成this.person.name=&quot;Olivia&quot;效果等同于this.$data.person.name=&quot;Olivia&quot;</li>
+</ol>
+<ul>
+<li>缺陷：
+<ol>
+<li>指令解析：还有很多指令没有解析，如v-bind : v-show</li>
+<li>没有考虑data里的数据为Array的情况</li>
+<li>样式没有考虑等等</li>
+</ol>
+</li>
+</ul>
+<h1 id="2-mvvm%e5%85%a5%e5%8f%a3">2. MVVM入口</h1>
+<ul>
+<li>实现一个指令解析器Compiler</li>
+<li>实现一个数据监听器Observer</li>
+<li>实现一个Watcher去更新视图</li>
+<li>实现一个Proxy</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-keyword">constructor</span>(options) {
+    <span class="hljs-keyword">this</span>.$el = options.el
+    <span class="hljs-keyword">this</span>.$data = options.data
+    <span class="hljs-keyword">this</span>.$options = options
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.$el) {
+      <span class="hljs-comment">// 1. 实现一个数据观察者</span>
+      <span class="hljs-keyword">new</span> Observer(<span class="hljs-keyword">this</span>.$data)
+      <span class="hljs-comment">// 2. 实现一个指令解析器</span>
+      <span class="hljs-keyword">new</span> Compiler(<span class="hljs-keyword">this</span>.$el, <span class="hljs-keyword">this</span>)
+      <span class="hljs-comment">// 3. 代理this.$data,在编写时可替换成this  this.$data.person.name --&gt;this.person.name</span>
+      <span class="hljs-keyword">this</span>.proxyData(<span class="hljs-keyword">this</span>.$data)
+    }
+  }
+</div></code></pre>
+<h1 id="3-%e6%8c%87%e4%bb%a4%e8%a7%a3%e6%9e%90%e5%99%a8compiler">3. 指令解析器Compiler</h1>
+<ol>
+<li>获取文档碎片对象， 放入内存会减少页面的回流和重绘</li>
+<li>编译模板
+<ul>
+<li>2.1 获取子节点</li>
+<li>2.2 遍历子节点，针对元素节点和文本节点进行分别编译</li>
+<li>2.3 若子节点下还有子节点，递归编译</li>
+</ul>
+</li>
+<li>将子元素追加到根元素</li>
+</ol>
+<h2 id="31-%e5%88%9b%e5%bb%ba%e6%96%87%e6%a1%a3%e5%af%b9%e8%b1%a1">3.1. 创建文档对象</h2>
+<pre><code class="language-js"><div>  node2Fragment(el) {
+    <span class="hljs-keyword">const</span> fragment = <span class="hljs-built_in">document</span>.createDocumentFragment()
+    <span class="hljs-keyword">let</span> firstChild
+    <span class="hljs-comment">// 遍历子节点，将所有节点加到文档碎片</span>
+    <span class="hljs-keyword">while</span> (firstChild = el.firstChild) {
+      fragment.appendChild(firstChild)
+    }
+    <span class="hljs-keyword">return</span> fragment
+  }
+</div></code></pre>
+<h2 id="32-%e7%bc%96%e8%af%91%e6%a8%a1%e6%9d%bf">3.2. 编译模板</h2>
+<pre><code class="language-js"><div>  compile(fragments) {
+    <span class="hljs-comment">// 2.1 获取子节点</span>
+    <span class="hljs-keyword">const</span> childNodes = fragments.childNodes;
+    <span class="hljs-comment">// 2.2 遍历子节点，针对元素节点和文本节点进行分别编译</span>
+    [...childNodes].forEach(<span class="hljs-function"><span class="hljs-params">child</span> =&gt;</span> {
+     <span class="hljs-comment">// console.log(child)</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isElementNode(child)) { <span class="hljs-comment">// 是元素节点</span>
+        <span class="hljs-comment">// 编译元素节点</span>
+        <span class="hljs-comment">// console.log('元素节点', child)</span>
+        <span class="hljs-keyword">this</span>.compileElement(child)
+      } <span class="hljs-keyword">else</span> { <span class="hljs-comment">// 是文本节点</span>
+        <span class="hljs-comment">// 编译文本节点</span>
+        <span class="hljs-comment">// console.log('文本节点', child)</span>
+        <span class="hljs-keyword">this</span>.compileText(child)
+      }
+      <span class="hljs-comment">// 2.3 子节点下还有子节点，递归编译</span>
+      <span class="hljs-keyword">if</span>(child.childNodes &amp;&amp; child.childNodes.length) {
+        <span class="hljs-keyword">this</span>.compile(child)
+      }
+    })
+  }
+</div></code></pre>
+<h2 id="33-%e7%bc%96%e8%af%91%e5%85%83%e7%b4%a0%e8%8a%82%e7%82%b9">3.3. 编译元素节点</h2>
+<pre><code class="language-js"><div>  compileElement(node) {
+    <span class="hljs-comment">// &lt;div v-text="msg"&gt;&lt;/div&gt; // &lt;input type="text" v-model="msg"/&gt;</span>
+    <span class="hljs-comment">// 遍历元素属性（有两种类型，一种是带v，一种是普通的属性），添加到元素当中</span>
+    <span class="hljs-keyword">const</span> attributes = node.attributes;
+    [...attributes].forEach(<span class="hljs-function"><span class="hljs-params">attr</span> =&gt;</span> {
+      <span class="hljs-comment">// console.log(attr)</span>
+      <span class="hljs-comment">// 获取属性名和属性值 name: v-text ,value: msg</span>
+      <span class="hljs-keyword">const</span> {name, value} = attr
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isDirective(name)) { <span class="hljs-comment">// 带v的属性 是一个指令 v-text v-model v-on:click v-bind:src</span>
+          <span class="hljs-comment">// 字符串分割</span>
+          <span class="hljs-keyword">const</span> [, directive] = name.split(<span class="hljs-string">'-'</span>) <span class="hljs-comment">// text model on:click</span>
+          <span class="hljs-keyword">const</span> [dirName, eventName] = directive.split(<span class="hljs-string">':'</span>) <span class="hljs-comment">// text model on </span>
+          <span class="hljs-comment">// console.log(name)</span>
+          <span class="hljs-comment">// 数据驱动视图：根据指令处理节点， 节点值</span>
+          compileUtil[dirName](node, value, <span class="hljs-keyword">this</span>.vm, eventName)
+          <span class="hljs-comment">// 删除有指令的标签上的属性 v-text 使得在html看的时候没有显示</span>
+          node.removeAttribute(<span class="hljs-string">'v-'</span> + directive)
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isEventName(name)) { <span class="hljs-comment">// 带@的属性 @click="handleClick"</span>
+        <span class="hljs-keyword">let</span> [, eventName] = name.split(<span class="hljs-string">'@'</span>)
+        compileUtil[<span class="hljs-string">'on'</span>](node, value, <span class="hljs-keyword">this</span>.vm, eventName)
+      }
+    })
+  }
+</div></code></pre>
+<h2 id="34-%e7%bc%96%e8%af%91%e6%96%87%e6%9c%ac%e8%8a%82%e7%82%b9">3.4. 编译文本节点</h2>
+<pre><code class="language-js"><div><span class="hljs-comment">// 编译文本节点</span>
+  compileText(node) { <span class="hljs-comment">// {{}} 空格 1 2 3 需要找出带{{}}的文本进行处理</span>
+    <span class="hljs-comment">// 找到节点上的所有文本 </span>
+    <span class="hljs-keyword">const</span> content = node.textContent
+    <span class="hljs-comment">// 正则匹配{{}}</span>
+    <span class="hljs-keyword">if</span>(<span class="hljs-regexp">/\{\{(.+?)\}\}/</span>.test(content)) {
+      compileUtil.text(node, content, <span class="hljs-keyword">this</span>.vm)
+    }
+  }
+</div></code></pre>
+<h1 id="4-%e5%ae%9e%e7%8e%b0%e4%b8%80%e4%b8%aa%e6%95%b0%e6%8d%ae%e7%9b%91%e5%90%ac%e5%99%a8observer">4. 实现一个数据监听器Observer</h1>
+<h2 id="41-%e7%9b%91%e5%90%ac%e6%95%b0%e6%8d%ae">4.1. 监听数据</h2>
+<pre><code class="language-js"><div>observe(data) { 
+    <span class="hljs-comment">/*person: {
+        name: "olivia",
+        age: 23,
+        fav:{
+          a: "travel",
+          b: "reading"
+        }
+      }
+     */</span>
+    <span class="hljs-keyword">if</span> (data &amp;&amp; <span class="hljs-keyword">typeof</span> data === <span class="hljs-string">'object'</span>) { <span class="hljs-comment">// data是对象,可能嵌套其它对象，需要采用递归遍历的方式进行数据劫持</span>
+      <span class="hljs-built_in">Object</span>.keys(data).forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> { 
+        <span class="hljs-keyword">this</span>.defineReactive(data, key, data[key])
+      })
+    }
+  }
+</div></code></pre>
+<h2 id="42-%e6%95%b0%e6%8d%ae%e5%8a%ab%e6%8c%81%e5%b9%b6%e9%80%9a%e7%9f%a5%e4%be%9d%e8%b5%96%e6%94%b6%e9%9b%86%e5%99%a8dep%e9%80%9a%e7%9f%a5watcher%e5%8e%bb%e6%9b%b4%e6%96%b0">4.2. 数据劫持并通知依赖收集器Dep通知Watcher去更新</h2>
+<pre><code class="language-js"><div>  defineReactive(obj, key, value){
+    <span class="hljs-comment">// 递归观察</span>
+    <span class="hljs-keyword">this</span>.observe(value)
+    <span class="hljs-keyword">const</span> dep = <span class="hljs-keyword">new</span> Dep()
+    <span class="hljs-built_in">Object</span>.defineProperty(obj, key, {
+      <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">configurable</span>: <span class="hljs-literal">false</span>,
+      <span class="hljs-keyword">get</span>(){
+        <span class="hljs-comment">// 将Dep和Observer关联起来，订阅数据变化时，往Dep中添加观察者</span>
+        Dep.target &amp;&amp; dep.addSub(Dep.target)
+        <span class="hljs-keyword">return</span> value
+      },
+      <span class="hljs-attr">set</span>: <span class="hljs-function">(<span class="hljs-params">newVal</span>) =&gt;</span>{
+        <span class="hljs-comment">// 监听新的值</span>
+        <span class="hljs-keyword">this</span>.observe(newVal) <span class="hljs-comment">// this指向，不用箭头函数this会指向Object，但this需要指向当前实例</span>
+        <span class="hljs-keyword">if</span>(newVal !== value){
+          value = newVal
+        }
+        <span class="hljs-comment">// 告诉Dep通知变化</span>
+        dep.notify()
+      }
+    })
+  }
+</div></code></pre>
+<h1 id="5-%e5%b1%9e%e6%80%a7%e8%ae%a2%e9%98%85%e5%99%a8dep">5. 属性订阅器Dep</h1>
+<p>Dep类存储watcher对象，并在数据变化时通知watcher</p>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Dep</span> </span>{
+  <span class="hljs-keyword">constructor</span> () {
+    <span class="hljs-keyword">this</span>.subs = []
+  }
+  <span class="hljs-comment">// 收集观察者</span>
+  addSub(watcher){
+    <span class="hljs-keyword">this</span>.subs.push(watcher)
+  }
+  <span class="hljs-comment">// 通知观察者去更新</span>
+  notify(){
+    <span class="hljs-comment">// console.log('通知了观察者', this.subs)</span>
+    <span class="hljs-keyword">this</span>.subs.forEach(<span class="hljs-function"><span class="hljs-params">watcher</span> =&gt;</span> watcher.update())
+  }
+}
+</div></code></pre>
+<h1 id="6-%e8%a7%82%e5%af%9f%e8%80%85watcher">6. 观察者Watcher</h1>
+<ol>
+<li>在自身实例化时往属性订阅器(dep)里面添加自己</li>
+<li>自身必须有一个update()方法</li>
+<li>待属性变动dep.notice()通知时，能调用自身的update()方法，并触发Compile中绑定的回调。</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Watcher</span> </span>{
+  <span class="hljs-keyword">constructor</span>(vm, expr, cb) {
+    <span class="hljs-keyword">this</span>.vm = vm
+    <span class="hljs-keyword">this</span>.expr = expr
+    <span class="hljs-keyword">this</span>.cb = cb
+    <span class="hljs-comment">// 初始化就将旧值绑定起来</span>
+    <span class="hljs-keyword">this</span>.oldVal = <span class="hljs-keyword">this</span>.getOldVal()
+  }
+  getOldVal(){ <span class="hljs-comment">// 把旧值保存起来，与新值比较是否发现更新</span>
+    <span class="hljs-comment">// Dep和watcher关联起来,Dep.target定义当前数据的watcher,拿到值之后销毁--&gt;在利用getValue获取数据调用getter()方法时先把当前观察者挂载</span>
+    Dep.target = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">const</span> oldVal = compileUtil.getVal(<span class="hljs-keyword">this</span>.expr, <span class="hljs-keyword">this</span>.vm)
+    <span class="hljs-comment">// 挂载完毕需要注销，防止重复挂载 (数据一更新就会挂载)</span>
+    Dep.target = <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">return</span> oldVal
+  }
+  update(){ <span class="hljs-comment">// 通过回调函数更新数据</span>
+    <span class="hljs-keyword">const</span> newVal = compileUtil.getVal(<span class="hljs-keyword">this</span>.expr, <span class="hljs-keyword">this</span>.vm)
+    <span class="hljs-keyword">if</span> (newVal !== <span class="hljs-keyword">this</span>.oldVal){
+      <span class="hljs-keyword">this</span>.cb(newVal)
+    }
+  }
+}
+</div></code></pre>
+<h1 id="7-%e6%95%b0%e6%8d%ae%e4%bb%a3%e7%90%86">7. 数据代理</h1>
+<p>this.$data --&gt; this</p>
+<pre><code class="language-js"><div>proxyData(data){
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> data) {
+      <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-keyword">this</span>, key, {
+        <span class="hljs-keyword">get</span>(){
+          <span class="hljs-keyword">return</span> data[key]
+        },
+        <span class="hljs-keyword">set</span>(newVal){
+          data[key] = newVal
+        }
+      })
+    }
+  }
+</div></code></pre>
+
+    </body>
+    </html>

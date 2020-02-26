@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>0.1. http</title>
+        <title>1. http</title>
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
@@ -22,52 +22,49 @@
     </head>
     <body class="vscode-light">
         <ul>
-<li><a href="#01-http">0.1. http</a>
+<li><a href="#1-http">1. http</a>
 <ul>
-<li><a href="#011-http%e8%af%b7%e6%b1%82%e6%8a%a5%e6%96%87">0.1.1. http请求报文</a></li>
-<li><a href="#012-http%e5%93%8d%e5%ba%94%e6%8a%a5%e6%96%87">0.1.2. http响应报文</a></li>
-<li><a href="#013-%e5%b8%b8%e8%a7%81%e5%93%8d%e5%ba%94%e7%8a%b6%e6%80%81%e7%a0%81">0.1.3. 常见响应状态码</a></li>
-<li><a href="#014-%e4%b8%8d%e5%90%8c%e7%b1%bb%e5%9e%8b%e7%9a%84%e8%af%b7%e6%b1%82%e5%8f%8a%e4%bd%9c%e7%94%a8">0.1.4. 不同类型的请求及作用</a></li>
-<li><a href="#015-api%e7%9a%84%e5%88%86%e7%b1%bb">0.1.5. API的分类</a></li>
+<li><a href="#11-http%e8%af%b7%e6%b1%82%e6%8a%a5%e6%96%87">1.1. http请求报文</a></li>
+<li><a href="#12-http%e5%93%8d%e5%ba%94%e6%8a%a5%e6%96%87">1.2. http响应报文</a></li>
+<li><a href="#13-%e5%b8%b8%e8%a7%81%e5%93%8d%e5%ba%94%e7%8a%b6%e6%80%81%e7%a0%81">1.3. 常见响应状态码</a></li>
+<li><a href="#14-%e4%b8%8d%e5%90%8c%e7%b1%bb%e5%9e%8b%e7%9a%84%e8%af%b7%e6%b1%82%e5%8f%8a%e4%bd%9c%e7%94%a8">1.4. 不同类型的请求及作用</a></li>
+<li><a href="#15-api%e7%9a%84%e5%88%86%e7%b1%bb">1.5. API的分类</a></li>
 </ul>
 </li>
-<li><a href="#02-%e4%bd%bf%e7%94%a8-json-server-%e6%90%ad%e5%bb%ba-rest-api">0.2. 使用 json-server 搭建 REST API</a>
+<li><a href="#2-%e4%bd%bf%e7%94%a8-json-server-%e6%90%ad%e5%bb%ba-rest-api">2. 使用 json-server 搭建 REST API</a>
 <ul>
-<li><a href="#021-json-server">0.2.1. JSON-SERVER</a></li>
+<li><a href="#21-json-server">2.1. JSON-SERVER</a></li>
 </ul>
 </li>
-<li><a href="#03-xhr%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">0.3. XHR的理解和使用</a>
+<li><a href="#3-xhr%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">3. XHR的理解和使用</a>
 <ul>
-<li><a href="#031-%e7%90%86%e8%a7%a3">0.3.1. 理解</a></li>
-<li><a href="#032-%e5%8c%ba%e5%88%ab%e4%b8%80%e8%88%ac-http-%e8%af%b7%e6%b1%82%e4%b8%8e-ajax-%e8%af%b7%e6%b1%82">0.3.2. 区别一般 http 请求与 ajax 请求</a></li>
-<li><a href="#033-api">0.3.3. API</a></li>
+<li><a href="#31-%e7%90%86%e8%a7%a3">3.1. 理解</a></li>
+<li><a href="#32-%e5%8c%ba%e5%88%ab%e4%b8%80%e8%88%ac-http-%e8%af%b7%e6%b1%82%e4%b8%8e-ajax-%e8%af%b7%e6%b1%82">3.2. 区别一般 http 请求与 ajax 请求</a></li>
+<li><a href="#33-api">3.3. API</a></li>
 </ul>
 </li>
-<li><a href="#04-xhr-%e7%9a%84-ajax-%e5%b0%81%e8%a3%85%e7%ae%80%e5%8d%95%e7%89%88-axios">0.4. XHR 的 ajax 封装(简单版 axios)</a></li>
-<li><a href="#05-axios%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">0.5. axios的理解和使用</a>
+<li><a href="#4-xhr-%e7%9a%84-ajax-%e5%b0%81%e8%a3%85%e7%ae%80%e5%8d%95%e7%89%88-axios">4. XHR 的 ajax 封装(简单版 axios)</a></li>
+<li><a href="#5-axios%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">5. axios的理解和使用</a>
 <ul>
-<li><a href="#051-axios%e6%98%af%e4%bb%80%e4%b9%88">0.5.1. axios是什么</a></li>
-<li><a href="#052-axios%e7%89%b9%e7%82%b9">0.5.2. axios特点</a></li>
-<li><a href="#053-axios-%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95">0.5.3. axios 常用语法</a></li>
+<li><a href="#51-axios%e6%98%af%e4%bb%80%e4%b9%88">5.1. axios是什么</a></li>
+<li><a href="#52-axios%e7%89%b9%e7%82%b9">5.2. axios特点</a></li>
+<li><a href="#53-axios-%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95">5.3. axios 常用语法</a></li>
 </ul>
 </li>
-<li><a href="#06-aixos%e9%9a%be%e7%82%b9">0.6. aixos难点</a>
+<li><a href="#6-aixos%e9%9a%be%e7%82%b9">6. aixos难点</a>
 <ul>
-<li><a href="#061-axioscreateconfig">0.6.1. axios.create([config])</a></li>
-<li><a href="#062-%e6%8b%a6%e6%88%aa%e5%99%a8%e5%87%bd%e6%95%b0ajax-%e8%af%b7%e6%b1%82%e8%af%b7%e6%b1%82%e7%9a%84%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e8%b0%83%e7%94%a8%e9%a1%ba%e5%ba%8f">0.6.2. 拦截器函数/ajax 请求/请求的回调函数的调用顺序</a></li>
-<li><a href="#063-%e5%8f%96%e6%b6%88%e8%af%b7%e6%b1%82">0.6.3. 取消请求</a>
-<ul>
+<li><a href="#61-axioscreateconfig">6.1. axios.create([config])</a></li>
+<li><a href="#62-%e6%8b%a6%e6%88%aa%e5%99%a8%e5%87%bd%e6%95%b0ajax-%e8%af%b7%e6%b1%82%e8%af%b7%e6%b1%82%e7%9a%84%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e8%b0%83%e7%94%a8%e9%a1%ba%e5%ba%8f">6.2. 拦截器函数/ajax 请求/请求的回调函数的调用顺序</a></li>
+<li><a href="#63-%e5%8f%96%e6%b6%88%e8%af%b7%e6%b1%82">6.3. 取消请求</a></li>
 <li><a href="#response%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">response的整体结构</a></li>
 <li><a href="#erroe%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">erroe的整体结构</a></li>
 <li><a href="#%e5%a6%82%e4%bd%95%e5%8f%96%e6%b6%88%e6%9c%aa%e5%ae%8c%e6%88%90%e7%9a%84%e8%af%b7%e6%b1%82">如何取消未完成的请求?</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<h2 id="01-http">0.1. http</h2>
+<h1 id="1-http">1. http</h1>
 <p>MDN: <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview</a></p>
-<h3 id="011-http%e8%af%b7%e6%b1%82%e6%8a%a5%e6%96%87">0.1.1. http请求报文</h3>
+<h2 id="11-http%e8%af%b7%e6%b1%82%e6%8a%a5%e6%96%87">1.1. http请求报文</h2>
 <ul>
 <li>请求行： method: get/post url: /detail?id=2</li>
 <li>请求头：host cookie content-type:application/x-www-form-urlencoded或者application/json</li>
@@ -77,7 +74,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="012-http%e5%93%8d%e5%ba%94%e6%8a%a5%e6%96%87">0.1.2. http响应报文</h3>
+<h2 id="12-http%e5%93%8d%e5%ba%94%e6%8a%a5%e6%96%87">1.2. http响应报文</h2>
 <ul>
 <li>响应状态行： status statusText</li>
 <li>多个响应头：
@@ -88,7 +85,7 @@
 </li>
 <li>响应体：html 文本/json 文本/js/css/图片</li>
 </ul>
-<h3 id="013-%e5%b8%b8%e8%a7%81%e5%93%8d%e5%ba%94%e7%8a%b6%e6%80%81%e7%a0%81">0.1.3. 常见响应状态码</h3>
+<h2 id="13-%e5%b8%b8%e8%a7%81%e5%93%8d%e5%ba%94%e7%8a%b6%e6%80%81%e7%a0%81">1.3. 常见响应状态码</h2>
 <ul>
 <li>100~199：表示成功接收请求，要求客户端继续提交下一次请求才能完成整个处理过程。</li>
 <li>200~299：表示成功接收请求并已完成整个处理过程。常用200，请求成功，一般用于get/post请求，201已创建，成功请求并创建了新的资源</li>
@@ -96,7 +93,7 @@
 <li>400~499：客户端的请求有错误，常用404(意味着你请求的资源在web服务器中没有)403(服务器拒绝访问，权限不够)401(未授权，请求要求用户的身份验证)</li>
 <li>500~599：服务器端出现错误，常用500</li>
 </ul>
-<h3 id="014-%e4%b8%8d%e5%90%8c%e7%b1%bb%e5%9e%8b%e7%9a%84%e8%af%b7%e6%b1%82%e5%8f%8a%e4%bd%9c%e7%94%a8">0.1.4. 不同类型的请求及作用</h3>
+<h2 id="14-%e4%b8%8d%e5%90%8c%e7%b1%bb%e5%9e%8b%e7%9a%84%e8%af%b7%e6%b1%82%e5%8f%8a%e4%bd%9c%e7%94%a8">1.4. 不同类型的请求及作用</h2>
 <p>CRUD: Create-POST/Retrieve-GET/Update-PUT/Delete-DELETE</p>
 <ul>
 <li>GET：从服务器端<em>读</em>取数据</li>
@@ -108,7 +105,7 @@
 <li>TRACE：回显服务器收到的请求，主要用于测试或诊断。</li>
 <li>CONNECT：HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。</li>
 </ul>
-<h3 id="015-api%e7%9a%84%e5%88%86%e7%b1%bb">0.1.5. API的分类</h3>
+<h2 id="15-api%e7%9a%84%e5%88%86%e7%b1%bb">1.5. API的分类</h2>
 <ul>
 <li>REST API: restful</li>
 </ul>
@@ -125,8 +122,8 @@
 <li>一个请求路径只对应一个操作</li>
 <li>一般只有 GET/POST</li>
 </ol>
-<h2 id="02-%e4%bd%bf%e7%94%a8-json-server-%e6%90%ad%e5%bb%ba-rest-api">0.2. 使用 json-server 搭建 REST API</h2>
-<h3 id="021-json-server">0.2.1. JSON-SERVER</h3>
+<h1 id="2-%e4%bd%bf%e7%94%a8-json-server-%e6%90%ad%e5%bb%ba-rest-api">2. 使用 json-server 搭建 REST API</h1>
+<h2 id="21-json-server">2.1. JSON-SERVER</h2>
 <p>用来快速搭建 REST API 的工具包</p>
 <ul>
 <li><a href="https://github.com/typicode/json-server">https://github.com/typicode/json-server</a></li>
@@ -156,15 +153,15 @@
     axios.delete(<span class="hljs-string">'http://localhost:3000/comments/2'</span>)
   }
 </div></code></pre>
-<h2 id="03-xhr%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">0.3. XHR的理解和使用</h2>
+<h1 id="3-xhr%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">3. XHR的理解和使用</h1>
 <p>MDN：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest">https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest</a></p>
-<h3 id="031-%e7%90%86%e8%a7%a3">0.3.1. 理解</h3>
+<h2 id="31-%e7%90%86%e8%a7%a3">3.1. 理解</h2>
 <ul>
 <li>使用 XMLHttpRequest (XHR)对象可以与服务器交互, 也就是发送 ajax 请求</li>
 <li>前端可以获取到数据，而无需让整个的页面刷新。</li>
 <li>这使得 Web 页面可以只更新页面的局部，而不影响用户的操作。</li>
 </ul>
-<h3 id="032-%e5%8c%ba%e5%88%ab%e4%b8%80%e8%88%ac-http-%e8%af%b7%e6%b1%82%e4%b8%8e-ajax-%e8%af%b7%e6%b1%82">0.3.2. 区别一般 http 请求与 ajax 请求</h3>
+<h2 id="32-%e5%8c%ba%e5%88%ab%e4%b8%80%e8%88%ac-http-%e8%af%b7%e6%b1%82%e4%b8%8e-ajax-%e8%af%b7%e6%b1%82">3.2. 区别一般 http 请求与 ajax 请求</h2>
 <ul>
 <li>ajax 请求是一种特别的 http 请求</li>
 <li>对服务器端来说, 没有任何区别, 区别在浏览器端的收发都不一样</li>
@@ -179,7 +176,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="033-api">0.3.3. API</h3>
+<h2 id="33-api">3.3. API</h2>
 <ol>
 <li>XMLHttpRequest(): 创建 XHR 对象的构造函数</li>
 <li>status: 响应状态码值, 比如 200, 404</li>
@@ -207,7 +204,7 @@
 <li>getAllResponseHeaders(): 获取所有响应头组成的字符串</li>
 <li>setRequestHeader(name, value): 设置请求头</li>
 </ol>
-<h2 id="04-xhr-%e7%9a%84-ajax-%e5%b0%81%e8%a3%85%e7%ae%80%e5%8d%95%e7%89%88-axios">0.4. XHR 的 ajax 封装(简单版 axios)</h2>
+<h1 id="4-xhr-%e7%9a%84-ajax-%e5%b0%81%e8%a3%85%e7%ae%80%e5%8d%95%e7%89%88-axios">4. XHR 的 ajax 封装(简单版 axios)</h1>
 <ul>
 <li>test: 02xhr.html
 特点：</li>
@@ -223,14 +220,14 @@
   data: {}, <span class="hljs-comment">// POST 或 DELETE 请求的请求体参数</span>
 }
 </div></code></pre>
-<h2 id="05-axios%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">0.5. axios的理解和使用</h2>
-<h3 id="051-axios%e6%98%af%e4%bb%80%e4%b9%88">0.5.1. axios是什么</h3>
+<h1 id="5-axios%e7%9a%84%e7%90%86%e8%a7%a3%e5%92%8c%e4%bd%bf%e7%94%a8">5. axios的理解和使用</h1>
+<h2 id="51-axios%e6%98%af%e4%bb%80%e4%b9%88">5.1. axios是什么</h2>
 <ul>
 <li>前端最流行的 ajax 请求库</li>
 <li>react/vue 官方都推荐使用 axios 发 ajax 请求</li>
 <li>文档: <a href="https://github.com/axios/axios">https://github.com/axios/axios</a></li>
 </ul>
-<h3 id="052-axios%e7%89%b9%e7%82%b9">0.5.2. axios特点</h3>
+<h2 id="52-axios%e7%89%b9%e7%82%b9">5.2. axios特点</h2>
 <ul>
 <li>基本 promise 的异步 ajax 请求库</li>
 <li>浏览器端/node端都可以使用</li>
@@ -239,7 +236,7 @@
 <li>请求/响应数据转换： axios.interceptors.request.use()/axios.interceptors.response.use()</li>
 <li>批量发送多个请求，类似Promise.all(): axios.all(promises)</li>
 </ul>
-<h3 id="053-axios-%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95">0.5.3. axios 常用语法</h3>
+<h2 id="53-axios-%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95">5.3. axios 常用语法</h2>
 <p>test: 03axios_CURD.html</p>
 <ul>
 <li>axios(config): 通用/最本质的发任意类型请求的方式</li>
@@ -265,8 +262,8 @@
 <li>axios.all(promises): 用于批量执行多个异步请求</li>
 <li>axios.spread(): 用来指定接收所有成功数据的回调函数的方法</li>
 </ul>
-<h2 id="06-aixos%e9%9a%be%e7%82%b9">0.6. aixos难点</h2>
-<h3 id="061-axioscreateconfig">0.6.1. axios.create([config])</h3>
+<h1 id="6-aixos%e9%9a%be%e7%82%b9">6. aixos难点</h1>
+<h2 id="61-axioscreateconfig">6.1. axios.create([config])</h2>
 <ul>
 <li>根据指定配置创建一个新的 axios, 也就就每个新 axios 都有自己的配置</li>
 <li>新 axios 只是没有取消请求和批量发请求的方法, 其它所有语法都是一致的</li>
@@ -294,7 +291,7 @@
   })
   <span class="hljs-comment">// instance.get('/posts')</span>
 </div></code></pre>
-<h3 id="062-%e6%8b%a6%e6%88%aa%e5%99%a8%e5%87%bd%e6%95%b0ajax-%e8%af%b7%e6%b1%82%e8%af%b7%e6%b1%82%e7%9a%84%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e8%b0%83%e7%94%a8%e9%a1%ba%e5%ba%8f">0.6.2. 拦截器函数/ajax 请求/请求的回调函数的调用顺序</h3>
+<h2 id="62-%e6%8b%a6%e6%88%aa%e5%99%a8%e5%87%bd%e6%95%b0ajax-%e8%af%b7%e6%b1%82%e8%af%b7%e6%b1%82%e7%9a%84%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e8%b0%83%e7%94%a8%e9%a1%ba%e5%ba%8f">6.2. 拦截器函数/ajax 请求/请求的回调函数的调用顺序</h2>
 <ul>
 <li>多个axios请求，有相同的处理和不同的处理，相同的处理交给拦截器</li>
 <li>: 调用 axios()并不是立即发送 ajax 请求, 而是需要经历一个较长的流程</li>
@@ -357,7 +354,7 @@
   data Array(5)
   */</span>
 </div></code></pre>
-<h3 id="063-%e5%8f%96%e6%b6%88%e8%af%b7%e6%b1%82">0.6.3. 取消请求</h3>
+<h2 id="63-%e5%8f%96%e6%b6%88%e8%af%b7%e6%b1%82">6.3. 取消请求</h2>
 <ol>
 <li>基本流程</li>
 </ol>
@@ -543,12 +540,12 @@ axios.interceptors.response.use(<span class="hljs-function">(<span class="hljs-p
     })
 }
 </div></code></pre>
-<h2 id="axios%e6%ba%90%e7%a0%81">axios源码</h2>
+<h1 id="axios%e6%ba%90%e7%a0%81">axios源码</h1>
 <ul>
 <li>官方库：<a href="https://github.com/axios/axios">https://github.com/axios/axios</a></li>
 <li>含中文注释的axios库：<a href="https://github.com/cheungww/axios">https://github.com/cheungww/axios</a></li>
 </ul>
-<h3 id="axios%e6%ba%90%e7%a0%81%e7%9b%ae%e5%bd%95">axios源码目录</h3>
+<h2 id="axios%e6%ba%90%e7%a0%81%e7%9b%ae%e5%bd%95">axios源码目录</h2>
 <ul>
 <li>├── /dist/                     # 项目输出目录</li>
 <li>├── /lib/                      # 项目源码目录</li>
@@ -569,13 +566,13 @@ axios.interceptors.response.use(<span class="hljs-function">(<span class="hljs-p
 <li>├── index.d.ts                 # 配置TypeScript的声明文件</li>
 <li>└── index.js                   # 入口文件</li>
 </ul>
-<h3 id="axios%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90">axios源码分析</h3>
-<h4 id="axios-%e4%b8%8e-axios-%e7%9a%84%e5%85%b3%e7%b3%bb">axios 与 Axios 的关系?</h4>
+<h2 id="axios%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90">axios源码分析</h2>
+<h2 id="axios-%e4%b8%8e-axios-%e7%9a%84%e5%85%b3%e7%b3%bb">axios 与 Axios 的关系?</h2>
 <ol>
 <li>从语法上来说: axios 不是 Axios 的实例--》 axios 是 Axios.prototype.request 函数 bind()返回的函数，axios()可以作为函数发请求，但是Axios实例不可以，只能调用方法才能发请求，如Axios.get()/Axios.post()</li>
 <li>从功能上来说: axios 是 Axios 的实例--》 axios 作为对象,它有 Axios 原型对象上的所有方法, 有 Axios 对象上所有属性</li>
 </ol>
-<h4 id="instance-%e4%b8%8e-axios-%e7%9a%84%e5%8c%ba%e5%88%ab">instance 与 axios 的区别?</h4>
+<h2 id="instance-%e4%b8%8e-axios-%e7%9a%84%e5%8c%ba%e5%88%ab">instance 与 axios 的区别?</h2>
 <ul>
 <li>相同:</li>
 </ul>
@@ -591,10 +588,10 @@ axios.interceptors.response.use(<span class="hljs-function">(<span class="hljs-p
 <li>默认匹配的值很可能不一样，各自默认配置和拦截器的配置可能不一样</li>
 <li>instance 没有 axios 后面添加的一些方法: create()/CancelToken()/all()</li>
 </ol>
-<h4 id="axios-%e8%bf%90%e8%a1%8c%e7%9a%84%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b%e5%b0%86%e8%bf%99%e4%b8%89%e4%b8%aa%e5%87%bd%e6%95%b0%e6%8f%90%e5%87%ba%e6%9d%a5%e4%bb%96%e4%bb%ac%e5%90%84%e8%87%aa%e7%9a%84%e4%bd%9c%e7%94%a8%e5%92%8c%e7%9b%b8%e4%ba%92%e4%b9%8b%e9%97%b4%e7%9a%84%e5%85%b3%e7%b3%bb">axios 运行的整体流程（将这三个函数提出来，他们各自的作用和相互之间的关系）</h4>
+<h2 id="axios-%e8%bf%90%e8%a1%8c%e7%9a%84%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b%e5%b0%86%e8%bf%99%e4%b8%89%e4%b8%aa%e5%87%bd%e6%95%b0%e6%8f%90%e5%87%ba%e6%9d%a5%e4%bb%96%e4%bb%ac%e5%90%84%e8%87%aa%e7%9a%84%e4%bd%9c%e7%94%a8%e5%92%8c%e7%9b%b8%e4%ba%92%e4%b9%8b%e9%97%b4%e7%9a%84%e5%85%b3%e7%b3%bb">axios 运行的整体流程（将这三个函数提出来，他们各自的作用和相互之间的关系）</h2>
 <ul>
 <li>整体流程: request(config) ==&gt; dispatchRequest(config) ==&gt; xhrAdapter(config)
-<img src="file:///d:\axios\test\axios\axios%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png" alt="axios整体流程"></li>
+<img src="file:///d:\note\Note\axios\axios%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png" alt="axios整体流程"></li>
 </ul>
 <pre><code class="language-js"><div><span class="hljs-comment">/*
 let chain = [dispatchRequest, undefined]
@@ -632,8 +629,8 @@ config =&gt; (fulfilled2, rejected2) =&gt; (fulfilled1, rejeted1) // 请求拦�
 <p>xhrAdapter(config): <em>创建 XHR 对象</em>, 根据 config 进行相应设置, 发送特定请求, 并接收响应数据, 返回 promise</p>
 </li>
 </ol>
-<h4 id="axios-%e7%9a%84%e8%af%b7%e6%b1%82%e5%93%8d%e5%ba%94%e6%8b%a6%e6%88%aa%e5%99%a8%e6%98%af%e4%bb%80%e4%b9%88">axios 的请求/响应拦截器是什么?</h4>
-<p><img src="file:///d:\axios\test\axios\axios%E7%9A%84%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%E5%99%A8%E5%92%8C%E5%93%8D%E5%BA%94%E6%8B%A6%E6%88%AA%E5%99%A8.png" alt="requestInterceptors/responseInterceptors"></p>
+<h2 id="axios-%e7%9a%84%e8%af%b7%e6%b1%82%e5%93%8d%e5%ba%94%e6%8b%a6%e6%88%aa%e5%99%a8%e6%98%af%e4%bb%80%e4%b9%88">axios 的请求/响应拦截器是什么?</h2>
+<p><img src="file:///d:\note\Note\axios\axios%E7%9A%84%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%E5%99%A8%E5%92%8C%E5%93%8D%E5%BA%94%E6%8B%A6%E6%88%AA%E5%99%A8.png" alt="requestInterceptors/responseInterceptors"></p>
 <ul>
 <li>请求拦截器:</li>
 </ul>
@@ -652,7 +649,7 @@ config =&gt; (fulfilled2, rejected2) =&gt; (fulfilled1, rejeted1) // 请求拦�
 <li>成功的回调函数, 传递的默认是 response</li>
 <li>失败的回调函数, 传递的默认是 error</li>
 </ol>
-<h4 id="axios-%e7%9a%84%e8%af%b7%e6%b1%82%e5%93%8d%e5%ba%94%e6%95%b0%e6%8d%ae%e8%bd%ac%e6%8d%a2%e5%99%a8%e6%98%af%e4%bb%80%e4%b9%88">axios 的请求/响应数据转换器是什么?</h4>
+<h2 id="axios-%e7%9a%84%e8%af%b7%e6%b1%82%e5%93%8d%e5%ba%94%e6%95%b0%e6%8d%ae%e8%bd%ac%e6%8d%a2%e5%99%a8%e6%98%af%e4%bb%80%e4%b9%88">axios 的请求/响应数据转换器是什么?</h2>
 <ol>
 <li>请求转换器: 对请求头和请求体数据进行特定处理的函数</li>
 </ol>
@@ -665,11 +662,11 @@ config =&gt; (fulfilled2, rejected2) =&gt; (fulfilled1, rejeted1) // 请求拦�
 <li>响应转换器: 将响应体 json 字符串解析为 js 对象或数组的函数
 response.data = JSON.parse(response.data)</li>
 </ol>
-<h4 id="response%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">response的整体结构</h4>
+<h2 id="response%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">response的整体结构</h2>
 <p>{data, status, statusText, headers, config, request}</p>
-<h4 id="erroe%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">erroe的整体结构</h4>
+<h2 id="erroe%e7%9a%84%e6%95%b4%e4%bd%93%e7%bb%93%e6%9e%84">erroe的整体结构</h2>
 <p>{message, response, request}</p>
-<h4 id="%e5%a6%82%e4%bd%95%e5%8f%96%e6%b6%88%e6%9c%aa%e5%ae%8c%e6%88%90%e7%9a%84%e8%af%b7%e6%b1%82">如何取消未完成的请求?</h4>
+<h2 id="%e5%a6%82%e4%bd%95%e5%8f%96%e6%b6%88%e6%9c%aa%e5%ae%8c%e6%88%90%e7%9a%84%e8%af%b7%e6%b1%82">如何取消未完成的请求?</h2>
 <p>有两个Promise,一个是发axios请求的promise,一个是取消发请求的Promise;<br>
 有两个cancel,一个Cancel对象，一个cancel()函数</p>
 <ul>

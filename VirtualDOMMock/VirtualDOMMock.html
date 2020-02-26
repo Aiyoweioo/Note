@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1. Virtua DOM模拟实现</title>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        
+    </head>
+    <body class="vscode-light">
+        <h1 id="1-virtua-dom%e6%a8%a1%e6%8b%9f%e5%ae%9e%e7%8e%b0">1. Virtua DOM模拟实现</h1>
+<p>假设Virtual DOM的样式如下:</p>
+<pre><code class="language-js"><div> {
+  <span class="hljs-attr">type</span>: <span class="hljs-string">'div'</span>,
+  <span class="hljs-attr">props</span>: {<span class="hljs-attr">key</span>:<span class="hljs-string">'xx'</span>,<span class="hljs-attr">id</span>: <span class="hljs-string">"wrapper"</span>, <span class="hljs-attr">a</span>:<span class="hljs-number">1</span>},
+  <span class="hljs-attr">children</span>: [
+    {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'span'</span>, 
+      <span class="hljs-attr">props</span>: {<span class="hljs-attr">style</span>:{<span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>}, <span class="hljs-string">'son'</span>}, 
+      <span class="hljs-attr">children</span>: [{}]
+    },
+    {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">''</span>, 
+      <span class="hljs-attr">props</span>: <span class="hljs-string">''</span> ,
+      <span class="hljs-attr">children</span>: [],
+      <span class="hljs-attr">text</span>: <span class="hljs-string">'father'</span>
+    }
+  ]
+}
+</div></code></pre>
+<p>对应的真实DOM为：</p>
+<pre><code class="language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">key</span>=<span class="hljs-string">"xx"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"wrapper"</span> <span class="hljs-attr">a</span>=<span class="hljs-string">1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"color:red"</span>&gt;</span>son<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+  father
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<h1 id="2-%e7%ac%ac%e4%b8%80%e6%ad%a5-%e5%ae%9e%e7%8e%b0%e8%99%9a%e6%8b%9f%e8%8a%82%e7%82%b9">2. 第一步： 实现虚拟节点</h1>
+<p>虚拟节点的参数：</p>
+<ol>
+<li>节点类型 type: 如div span string类型</li>
+<li>节点属性 props: 如id key {}类型</li>
+<li>节点的子节点 children []类型</li>
+<li>节点属性key</li>
+<li>文本节点text</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-comment">/*处理成虚拟节点*/</span>
+<span class="hljs-keyword">import</span> {vnode} <span class="hljs-keyword">from</span> <span class="hljs-string">'./vnode'</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type, props={}, ...children</span>) </span>{
+  <span class="hljs-keyword">let</span> key
+  <span class="hljs-keyword">if</span>(props.key) { <span class="hljs-comment">// 如果存在key属性，将key属性单独保存起来，并且在props上删除key属性</span>
+    key = props.key
+    <span class="hljs-keyword">delete</span> props.key
+  }
+  <span class="hljs-comment">// 把不是虚拟节点的子节点，变成虚拟节点</span>
+  children = children.map(<span class="hljs-function"><span class="hljs-params">child</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> child === <span class="hljs-string">'string'</span>) { <span class="hljs-comment">// 如果是文本节点</span>
+      <span class="hljs-keyword">return</span> vnode(<span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, child)
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> child
+    }
+  })
+  
+  <span class="hljs-keyword">return</span> vnode(type, key, props, children)
+} 
+<span class="hljs-comment">/******************/</span>
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">vnode</span>(<span class="hljs-params">type, key, props, children,text</span>)</span>{
+  <span class="hljs-keyword">return</span> {
+    type,
+    key,
+    props,
+    children,
+    text
+  }
+}
+</div></code></pre>
+<h1 id="3-%e7%ac%ac%e4%ba%8c%e6%ad%a5-%e5%b0%86%e8%8a%82%e7%82%b9%e6%8c%82%e5%9c%a8%e7%9c%9f%e5%ae%9e%e7%9a%84dom%e4%b8%8b">3. 第二步： 将节点挂在真实的DOM下</h1>
+<p>参数： vnode 虚拟节点 container 要渲染到哪个容器</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">export</span>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">vnode, container</span>) </span>{
+  <span class="hljs-keyword">let</span> ele = createElementFromVnode(vnode)
+  container.appendChild(ele)
+}
+</div></code></pre>
+<h2 id="31-%e9%80%9a%e8%bf%87%e8%99%9a%e6%8b%9f%e8%8a%82%e7%82%b9%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e7%9c%9f%e5%ae%9e%e7%9a%84dom%e5%85%83%e7%b4%a0">3.1. 通过虚拟节点创建一个真实的dom元素</h2>
+<ul>
+<li>type(元素标签)有值：元素节点
+<ul>
+<li>document.createElement(type)直接创建真实DOM并且保存该值（建立虚拟节点和真实元素的关系），方便以后更新真实的DOM</li>
+<li>比对 老属性 和 新属性 重新更新节点</li>
+<li>children放的也是一个虚拟节点，递归渲染子节点</li>
+</ul>
+</li>
+<li>否则：文本节点 document.createTextNode(text)直接创建真实DOM</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-comment">// 通过虚拟的对象 创建一个真实的dom元素</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElementFromVnode</span>(<span class="hljs-params">vnode</span>)</span>{
+  <span class="hljs-keyword">let</span> {type, key, props, children, text} = vnode
+  <span class="hljs-keyword">if</span>(type){ <span class="hljs-comment">// 传送了类型，说明是一个标签</span>
+    vnode.domElement = <span class="hljs-built_in">document</span>.createElement(type) <span class="hljs-comment">// 创建虚拟节点和真实元素的关系，方便以后更新真实的DOM</span>
+    <span class="hljs-comment">// 根据当前的虚拟节点的属性更新当前的真实的dom元素</span>
+    updateProperties(vnode)
+    <span class="hljs-comment">// children放的也是一个虚拟节点，递归渲染子节点</span>
+    children.forEach(<span class="hljs-function"><span class="hljs-params">childVnode</span> =&gt;</span> render(childVnode, vnode.domElement))
+  } <span class="hljs-keyword">else</span> { <span class="hljs-comment">// 文本节点</span>
+    vnode.domElement = <span class="hljs-built_in">document</span>.createTextNode(text)
+  }
+  <span class="hljs-keyword">return</span> vnode.domElement
+}
+</div></code></pre>
+<h2 id="32-%e6%98%af%e5%90%a6%e9%9c%80%e8%a6%81%e6%9b%b4%e6%96%b0%e8%8a%82%e7%82%b9%e7%9a%84%e5%b1%9e%e6%80%a7">3.2. 是否需要更新节点的属性</h2>
+<ul>
+<li>删除属性</li>
+</ul>
+<ol>
+<li>遍历旧的属性列表，查看每个属性是否还存在于新的属性列表中 --&gt; 旧props:{style：{color:red},id=1} 新prop:{id=1} 删除props的style属性</li>
+<li>遍历新的属性列表，判断两个列表中都存在的属性的值是否有变化（递归） --&gt; 旧props:{style：{color:&quot;red&quot;},id=1} 新prop:{style：{background-color:&quot;pink&quot;},id=1} 删除props的style的color属性</li>
+</ol>
+<ul>
+<li>添加属性
+<ul>
+<li>普通属性：直接给真实DOM元素设置</li>
+<li>特殊属性：如style 需要遍历里面的属性</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateProperties</span>(<span class="hljs-params">newVnode, oldProps={}</span>) </span>{
+  <span class="hljs-keyword">let</span> domElement = newVnode.domElement <span class="hljs-comment">// 真实的dom元素</span>
+  <span class="hljs-keyword">let</span> newProps = newVnode.props <span class="hljs-comment">// 当前虚拟节点中的属性</span>
+
+  <span class="hljs-comment">// 老的里面有，新的里面没有，说明该属性需要被移除</span>
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> oldPropName <span class="hljs-keyword">in</span> oldProps) {
+    <span class="hljs-keyword">if</span> (!newProps[oldPropName]) {
+      <span class="hljs-keyword">delete</span> domElement[oldPropName]
+    }
+  }
+  <span class="hljs-comment">// 如果新的里面有style，老的里面也有style， style可能不一样，老的里面有background,新的没有，也要去对比</span>
+  <span class="hljs-keyword">let</span> newStyObj = newProps.style || {}
+  <span class="hljs-keyword">let</span> oldStyObj = oldProps.style || {}  
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> propName <span class="hljs-keyword">in</span> oldStyObj) {
+    <span class="hljs-keyword">if</span>(!newStyObj[propName]){
+      domElement.style[propName] = <span class="hljs-string">''</span> <span class="hljs-comment">// 老dom元素更新之后没有，没有某个样式需要删除</span>
+    }
+  }
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> newPropsName <span class="hljs-keyword">in</span> newProps) {
+    <span class="hljs-comment">// 添加style属性，style是一个对象需要特殊处理，还有@click等也需要特殊处理，addEventListener</span>
+    <span class="hljs-keyword">if</span>(newPropsName === <span class="hljs-string">'style'</span>) {
+      <span class="hljs-keyword">let</span> styObj = newProps.style
+      <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> s <span class="hljs-keyword">in</span> styObj) {
+        domElement.style[s] = styObj[s]
+      }
+    }<span class="hljs-keyword">else</span>{
+      domElement[newPropsName] = newProps[newPropsName]
+    }
+
+  }
+}
+</div></code></pre>
+
+    </body>
+    </html>
