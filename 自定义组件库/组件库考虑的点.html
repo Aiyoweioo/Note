@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1. 效果演示</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <ul>
+<li><a href="#1-%e6%95%88%e6%9e%9c%e6%bc%94%e7%a4%ba">1. 效果演示</a></li>
+<li><a href="#2-prop%e6%a0%a1%e9%aa%8c">2. prop校验</a></li>
+<li><a href="#3-%e6%8f%92%e6%a7%bd%e7%9a%84%e4%bd%bf%e7%94%a8">3. 插槽的使用</a></li>
+<li><a href="#4-sync%e4%bf%ae%e9%a5%b0%e7%ac%a6">4. sync修饰符</a></li>
+<li><a href="#5-v-model">5. v-model</a></li>
+<li><a href="#6-dialog%e4%bd%bf%e7%94%a8trasition">6. dialog使用trasition</a></li>
+<li><a href="#7-input%e7%9a%84clearable%e5%92%8cshow-password%e5%b1%9e%e6%80%a7">7. input的clearable和show-password属性</a></li>
+<li><a href="#8-switch%e4%bd%bf%e7%94%a8nexttick">8. switch使用$nextTick()</a></li>
+<li><a href="#9-radio%e5%92%8cradiogroup%e4%bd%bf%e7%94%a8provider%e5%92%8cinject">9. radio和radioGroup使用provider和inject</a></li>
+<li><a href="#10-radio%e5%92%8ccheckbox%e4%bd%bf%e7%94%a8provider%e5%92%8cinject%e7%9a%84%e5%8c%ba%e5%88%ab">10. radio和checkbox使用provider和inject的区别</a></li>
+<li><a href="#11-%e6%8a%80%e5%b7%a7">11. 技巧</a>
+<ul>
+<li><a href="#111-%e5%9b%be%e6%a0%87%e7%ae%80%e5%86%99">11.1. 图标简写</a></li>
+<li><a href="#112-radio%e7%bb%84%e4%bb%b6%e6%b2%a1%e6%9c%89%e5%a1%ab%e5%86%99%e6%96%87%e6%9c%ac%e7%94%a8label%e4%bb%a3%e6%9b%bf">11.2. radio组件没有填写文本用label代替</a></li>
+<li><a href="#113-%e5%85%b3%e4%ba%8escoped%e5%92%8c%e6%b7%b1%e5%ba%a6%e9%80%89%e6%8b%a9%e5%99%a8">11.3. 关于scoped和深度选择器</a>
+自定义vue组件库</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-%e6%95%88%e6%9e%9c%e6%bc%94%e7%a4%ba">1. 效果演示</h1>
+<ul>
+<li>初始化vue项目: vue create demo</li>
+<li>安装组件库: npm install olvue-ui</li>
+<li>全局导入</li>
+</ul>
+<pre><code><code><div>import OlUI from 'olvue-ui'
+import 'olvue-ui/dist/olvue-ui.css'
+Vue.use(OlUI)
+</div></code></code></pre>
+<h1 id="2-prop%e6%a0%a1%e9%aa%8c">2. prop校验</h1>
+<p>对组件的类型和默认值进行设置</p>
+<pre><code><code><div>props: {
+  type: { // prop校验
+    type: String, // 字符串类型
+    default: 'default'
+  }
+}
+</div></code></code></pre>
+<h1 id="3-%e6%8f%92%e6%a7%bd%e7%9a%84%e4%bd%bf%e7%94%a8">3. 插槽的使用</h1>
+<ol>
+<li>匿名插槽
+按钮组件为例：如果父组件没有传递文字（插槽）只设置了图标，按钮组件就只显示i标签而不显示span标签。</li>
+</ol>
+<pre><code class="language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"icon"</span> <span class="hljs-attr">:class</span>=<span class="hljs-string">"icon"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 如果没有传入任何的内容 --》当我们没有传入插槽的时候 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"$slots.default"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">slot</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</div></code></pre>
+<ol start="2">
+<li>具名插槽
+在设置dialog组件时，若父组件设置名为title的插槽，dialog就会显示对应的title，若不设置，如果不传递，dialog就不显示span标签。footer类似。</li>
+</ol>
+<pre><code class="language-html"><div><span class="hljs-comment">&lt;!-- 父组件 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ol-dialog</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-slot:title</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>注意<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-slot:footer</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ol-button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"primary"</span>&gt;</span>确认<span class="hljs-tag">&lt;/<span class="hljs-name">ol-button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ol-button</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">"visible=false"</span>&gt;</span>取消<span class="hljs-tag">&lt;/<span class="hljs-name">ol-button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ol-dialog</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- dialog组件 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"title"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-dialog__title"</span>&gt;</span>{{title}}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-dialog__footer"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"$slots.footer"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"footer"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<h1 id="4-sync%e4%bf%ae%e9%a5%b0%e7%ac%a6">4. sync修饰符</h1>
+<p>在设置dialog组件时，父组件给dialog传递visible，dialog想修改visible关闭对话框时，使用sync语法糖，父组件不需要注册相应的事件，只需要dialog emit update:visible事件。对于使用者来说，方便些。</p>
+<pre><code><code><div>&lt;!-- 父组件 --&gt;
+&lt;ol-dialog width=&quot;20%&quot; top=&quot;100px&quot; :visible=&quot;visible&quot; @update:visible=&quot;dialogClose&quot;&gt;
+...
+methods: {
+    dialogClose (value) {
+      this.visible = value
+    }
+  }
+
+&lt;!-- dialog组件 --&gt;
+  &lt;div class=&quot;ol-dialog__wrapper&quot; v-show=&quot;visible&quot; @click.self=&quot;handleClose&quot;&gt;
+methods: {
+    handleClose () {
+      this.$emit('update:visible', false)
+    }
+  }
+&lt;!-- 使用sync修饰符后 --&gt;
+&lt;!-- 父组件 --&gt;
+&lt;ol-dialog width=&quot;20%&quot; top=&quot;100px&quot; :visible.sync=&quot;visible&quot;&gt;
+</div></code></code></pre>
+<h1 id="5-v-model">5. v-model</h1>
+<p>目的：给input组件绑定v-model事件
+v-model做了两件事情:</p>
+<ol>
+<li>给input绑定value：数据 --》 视图</li>
+<li>给input绑定input事件： 视图 --》 数据</li>
+</ol>
+<pre><code><code><div>&lt;input type=&quot;text&quot; :value=&quot;username&quot; @input=&quot;username=$event.target.value&quot;&gt;
+&lt;!-- 等价 --&gt;
+&lt;input type=&quot;text&quot; v-model=&quot;username&quot;&gt;
+</div></code></code></pre>
+<p>因此，需要给input组件接收父组件传递过来的value，绑定input事件(input名称不能改)</p>
+<pre><code><code><div>&lt;!-- 父组件 --&gt;
+&lt;ol-input
+  type=&quot;text&quot;
+  name=&quot;username&quot;
+  placeholder=&quot;请输入姓名&quot;
+  v-model=&quot;username&quot;
+&gt;
+&lt;/ol-input&gt;
+// ...
+  data () {
+    return {
+      username: 'olivia'
+    }
+  }
+
+&lt;!-- input组件 --&gt;
+&lt;input
+  class=&quot;ol-input__inner&quot;
+  :type=&quot;type&quot;
+  :name=&quot;name&quot;
+  :placeholder=&quot;placeholder&quot;
+  :value=&quot;value&quot;
+  @input=&quot;handleInput&quot;&gt;
+// ...
+props: {
+  value: {
+      type: String,
+      default: ''
+    }
+},
+methods: {
+  handleInput (e) {
+    this.$emit('input', e.target.value)
+  }
+}
+</div></code></code></pre>
+<h1 id="6-dialog%e4%bd%bf%e7%94%a8trasition">6. dialog使用trasition</h1>
+<p>给dialog的显示与隐藏添加动画。直接在dialog外部添加trasition标签，名为dialog-transition。</p>
+<pre><code><code><div>  // 添加dialog显示与隐藏动画
+  .dialog-transition-enter-active {
+    animation: fade .4s;
+  }
+  .dialog-transition-leave-active {
+    animation: fade .5s reverse;
+  }
+  @keyframes fade {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px)
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px)
+    }
+  }
+</div></code></code></pre>
+<h1 id="7-input%e7%9a%84clearable%e5%92%8cshow-password%e5%b1%9e%e6%80%a7">7. input的clearable和show-password属性</h1>
+<p>要解决的问题：</p>
+<ol>
+<li>图标的位置
+<ul>
+<li>在input后面添加一个span标签，里面分别包含clearable和show-password属性的i标签，设置样式</li>
+</ul>
+</li>
+<li>控制图标的显示与隐藏
+<ul>
+<li>对应的i标签绑定click事件并处理。</li>
+<li>设置一个ol-input--suffix的样式，根据clearable和show-password属性显示与隐藏span标签</li>
+<li>对于show-password，不修改来自父组件的type，而是input组件自身设置一个值passwordVisible来控制password的显示与隐藏。</li>
+</ul>
+</li>
+<li>优化
+<ul>
+<li>clearable图标，有内容才显示清空内容图标</li>
+<li>show-password图标，显示密码时高亮</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-html"><div><span class="hljs-comment">&lt;!-- 父组件 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ol-input</span>
+  <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"username"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"请输入姓名"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"username"</span>
+  <span class="hljs-attr">clearable</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ol-input</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ol-input</span>
+  <span class="hljs-attr">type</span>=<span class="hljs-string">"password"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"password"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"请输入密码"</span>
+  <span class="hljs-attr">v-model</span>=<span class="hljs-string">"password"</span> <span class="hljs-attr">showPassword</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ol-input</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- 子组件 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-input"</span> <span class="hljs-attr">:class</span>=<span class="hljs-string">"{'ol-input--suffix': showSuffix}"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
+  <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-input__inner"</span>
+  <span class="hljs-attr">:class</span>=<span class="hljs-string">"{'is-disabled': disabled}"</span>
+  <span class="hljs-attr">:type</span>=<span class="hljs-string">"showPassword ? (passwordVisible ? 'text' : 'password') : type"</span>
+  <span class="hljs-attr">:name</span>=<span class="hljs-string">"name"</span>
+  <span class="hljs-attr">:placeholder</span>=<span class="hljs-string">"placeholder"</span>
+  <span class="hljs-attr">:disabled</span>=<span class="hljs-string">"disabled"</span>
+  <span class="hljs-attr">:value</span>=<span class="hljs-string">"value"</span>
+  @<span class="hljs-attr">input</span>=<span class="hljs-string">"handleInput"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-input__suffix"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"showSuffix"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-input__icon ol-icon-circle-close"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"clearable &amp;&amp; value"</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">"handleClear"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ol-input__icon ol-icon-view"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"showPassword"</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">"handlePassword"</span>
+    <span class="hljs-attr">:class</span>=<span class="hljs-string">"{'ol-icon-view-active': passwordVisible}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+  data () {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-comment">// 控制是否显示密码框</span>
+      passwordVisible: <span class="hljs-literal">false</span>
+    }
+  },
+  props:{
+    clearable: {
+      type: Boolean,
+      <span class="hljs-keyword">default</span>: <span class="hljs-literal">false</span>
+    },
+    showPassword: {
+      type: Boolean,
+      <span class="hljs-keyword">default</span>: <span class="hljs-literal">false</span>
+    },
+  },
+  methods: {
+    handleClear (e) {
+      <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">'input'</span>, <span class="hljs-string">''</span>)
+    },
+    handlePassword () {
+      <span class="hljs-keyword">this</span>.passwordVisible = !<span class="hljs-keyword">this</span>.passwordVisible
+    }
+  },
+  computed: {
+    showSuffix () {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.clearable || <span class="hljs-keyword">this</span>.showPassword
+    }
+  }
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<h1 id="8-switch%e4%bd%bf%e7%94%a8nexttick">8. switch使用$nextTick()</h1>
+<p>switch组件的处理</p>
+<ol>
+<li>点击开关切换，点击的时候改变颜色，并让里面的圆球移动translateX(20px)</li>
+<li>设置switch的name属性。在使用switch组件的时候，用户当成表单元素来使用的，因此需要name属性。这需要添加checkbox，但不能显示checkbox，值变化了，也需要更新checkbox的value值。由于<code>label</code>标签里包含了input和span，此时点击事件是由input触发的，因此需要给label设置for。</li>
+<li>处理开关点击事件，需要做两件事： 一是修改来自父组件的value值 而是修改开关的背景色。当switch传递值给父组件时，父组件数据更新后，还需要等待等待DOM更新，才能修改开关的颜色。</li>
+</ol>
+<pre><code class="language-js"><div><span class="hljs-keyword">async</span> handleClick () {
+  <span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">'input'</span>, !<span class="hljs-keyword">this</span>.value)
+  <span class="hljs-comment">// 点击修改开关的颜色</span>
+  <span class="hljs-comment">// console.log(this.value)</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.$nextTick()
+}
+</div></code></pre>
+<h1 id="9-radio%e5%92%8cradiogroup%e4%bd%bf%e7%94%a8provider%e5%92%8cinject">9. radio和radioGroup使用provider和inject</h1>
+<p>用户在使用radio和radioGroup组件时，radioGroup和radio不一定是父子组件的关系。</p>
+<ul>
+<li>链接：<a href="https://cn.vuejs.org/v2/api/#provide-inject">https://cn.vuejs.org/v2/api/#provide-inject</a>
+允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。</li>
+<li>radioGroup组件提供provider,radio组件接收inject。</li>
+</ul>
+<pre><code><code><div>// radioGroup组件
+provide () {
+  return {
+      RadioGroup: this
+    }
+}
+
+// radio组件
+inject: {
+  RadioGroup: {
+    default: ''
+  }
+}
+</div></code></code></pre>
+<p>因此，在设置radio组件点击后的样式需要考虑radio组件是否包含在radioGroup里面进行设置</p>
+<pre><code><code><div>&lt;!-- radio组件 --&gt;
+&lt;label class=&quot;ol-radio&quot; :class=&quot;{'is-checked': label === modelValue}&quot;&gt;
+// ...
+computed: {
+  modelValue: {
+    get () {
+      // 如果radio被radioGroup包裹，就取来自radioGroup的值
+      return this.isGroup ? this.RadioGroup.value : this.value
+    },
+    set (value) {
+      // 触发radio组件注册的input事件
+      this.isGroup ? this.RadioGroup.$emit('input', value) : this.$emit('input', value)
+    }
+  },
+  // 判断radio是否被radio-group包裹，返回布尔值
+  isGroup () {
+    return !!this.RadioGroup
+  }
+}
+</div></code></code></pre>
+<h1 id="10-radio%e5%92%8ccheckbox%e4%bd%bf%e7%94%a8provider%e5%92%8cinject%e7%9a%84%e5%8c%ba%e5%88%ab">10. radio和checkbox使用provider和inject的区别</h1>
+<p>相同点: 在设置组件点击后的样式需要考虑组件是否包含在Group里面进行设置
+不同点：checkbox是多选按钮，用户在使用checkbox时，可以作为单选按钮，也可以作为多选按钮，此时是数组。但radio一般不会单个使用。在checkboxGroup组件来自父组件的值是数组。相应地在使用多个checkbox时，需要检查checkbox的label是否在数组中来判断哪些checkbox被选中。</p>
+<pre><code><code><div>&lt;!-- checkbox组件 --&gt;
+&lt;label class=&quot;ol-checkbox&quot; :class=&quot;{'is-checked': isChecked}&quot;&gt;
+// ...
+
+computed: {
+  modelValue: {
+    get () {
+      // 如果checkbox被checkboxGroup包裹，就取来自checkboxGroup的值
+      return this.isGroup ? this.checkboxGroup.value : this.value
+    },
+    set (value) {
+      // 触发checkbox组件注册的input事件
+      this.isGroup ? this.checkboxGroup.$emit('input', value) : this.$emit('input', value)
+    }
+  },
+  // 判断checkbox是否被checkbox-group包裹，返回布尔值
+  isGroup () {
+    return !!this.checkboxGroup
+  },
+  // 判断哪一个checkbox被选中
+  isChecked () {
+    // 若checkbox被checkbox-group包裹，在modelValuelabel，就说明选中
+    // 若checkbox没有checkbox-group包裹，直接返回modelValue
+    return this.isGroup ? this.modelValue.includes(this.label) : this.modelValue
+  }
+}
+</div></code></code></pre>
+<h1 id="11-%e6%8a%80%e5%b7%a7">11. 技巧</h1>
+<h2 id="111-%e5%9b%be%e6%a0%87%e7%ae%80%e5%86%99">11.1. 图标简写</h2>
+<p>写图标样式的时候不需要写ol-icon ol-icon-apple 只需要写ol-icon-apple。在设置图标的样式的时候，就规定有[class*='ol-icon-']就可以</p>
+<pre><code class="language-scss"><div><span class="hljs-selector-attr">[class*='ol-icon-']</span> {
+  <span class="hljs-comment">/* use !important to prevent issues with browser extensions that change fonts */</span>
+  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">'element-icons'</span> <span class="hljs-meta">!important</span>;
+  <span class="hljs-comment">// speak: none;</span>
+  <span class="hljs-attribute">font-style</span>: normal;
+  <span class="hljs-attribute">font-weight</span>: normal;
+  <span class="hljs-attribute">font-variant</span>: normal;
+  <span class="hljs-attribute">text-transform</span>: none;
+  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">1</span>;
+  <span class="hljs-attribute">vertical-align</span>: baseline;
+  <span class="hljs-attribute">display</span>: inline-block;
+
+  <span class="hljs-comment">/* Better Font Rendering =========== */</span>
+  -webkit-<span class="hljs-attribute">font</span>-smoothing: antialiased;
+  -moz-osx-<span class="hljs-attribute">font</span>-smoothing: grayscale;
+}
+</div></code></pre>
+<h2 id="112-radio%e7%bb%84%e4%bb%b6%e6%b2%a1%e6%9c%89%e5%a1%ab%e5%86%99%e6%96%87%e6%9c%ac%e7%94%a8label%e4%bb%a3%e6%9b%bf">11.2. radio组件没有填写文本用label代替</h2>
+<pre><code><code><div>&lt;!-- radio组件 --&gt;
+&lt;span calss=&quot;ol-radio__label&quot;&gt;
+  &lt;slot&gt;&lt;/slot&gt;
+  &lt;!-- 如果没有传入内容，就将label当成内容 --&gt;
+  &lt;template v-if=&quot;!$slots.default&quot;&gt;{{label}}&lt;/template&gt;
+&lt;/span&gt;
+</div></code></code></pre>
+<h2 id="113-%e5%85%b3%e4%ba%8escoped%e5%92%8c%e6%b7%b1%e5%ba%a6%e9%80%89%e6%8b%a9%e5%99%a8">11.3. 关于scoped和深度选择器</h2>
+<p>源于dialog组件的footer按钮已经设置好了样式margin-right，打算将两个按钮隔开，但是没有效果。解决办法：</p>
+<ol>
+<li>将scoped删除之后，效果就显示出来了。
+scoped的作用是给当前组件内的标签都打上一个data-v-随机属性，同时也给当前组件内所有的样式添加一个对应的属性选择器。footer是dialog的具名插槽，如今dialog组件想设置父组件的button样式，然而父组件有对应的data-v-随机属性，dialog里的也有对应的data-v-随机属性，两者不一致，因此没有效果。</li>
+<li>不删除scoped，利用vue提供的深度选择器</li>
+</ol>
+<ul>
+<li>链接：<a href="https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors">https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors</a></li>
+<li>使用：css: .a &gt;&gt;&gt; .b { /* ... */ } sass: /deep/ 或者 ::v-deep</li>
+</ul>
+<pre><code><code><div>// scss
+&amp;__footer {
+  padding: 10px 20px 20px;
+  text-align: right;
+  box-sizing: border-box;
+  ::v-deep .ol-button:first-child {
+    margin-right: 20px;
+  }
+}
+</div></code></code></pre>
+
+    </body>
+    </html>

@@ -36,6 +36,13 @@
 - 感谢姜文老师
 - 视频地址： https://www.bilibili.com/video/av51693431?p=42
 # 1. 概念
+webpack运行过程：
+1. 配置解析
+2. 内置插件&配置插件注册
+3. 确认入口获取所有资源
+4. 使用Loader翻译资源
+5. 识别资源加载语句并递归遍历所有资源
+6. 封装依赖资源输出结果
 - entry: 默认src/index.j
 - output: 默认dist/main.js
 - loader: 本身是函数，对模块的源代码进行转换，在配置文件的 module.rules 中配置 loader

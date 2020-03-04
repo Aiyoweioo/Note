@@ -37,11 +37,11 @@ MDN: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview
 - 响应体：html 文本/json 文本/js/css/图片
 
 ## 1.3. 常见响应状态码
-- 100~199：表示成功接收请求，要求客户端继续提交下一次请求才能完成整个处理过程。
-- 200~299：表示成功接收请求并已完成整个处理过程。常用200，请求成功，一般用于get/post请求，201已创建，成功请求并创建了新的资源
-- 300~399：为完成请求，客户需进一步细化请求。例如：请求的资源已经移动一个新地址、常用302(意味着你请求我，我让你去找别人),307和304(我不给你这个资源，自己拿缓存)
-- 400~499：客户端的请求有错误，常用404(意味着你请求的资源在web服务器中没有)403(服务器拒绝访问，权限不够)401(未授权，请求要求用户的身份验证)
-- 500~599：服务器端出现错误，常用500
+- 100~199：表示`成功接收请求`，要求客户端继续提交下一次请求才能完成整个处理过程。
+- 200~299：表示`成功接收请求并已完成整个处理过程`。常用200，请求成功，一般用于get/post请求，201已创建，成功请求并创建了新的资源
+- 300~399：为`完成请求，客户需进一步细化请求`。例如：请求的资源已经移动一个新地址、常用302(意味着你请求我，我让你去找别人),307和304(我不给你这个资源，自己拿缓存)
+- 400~499：`客户端的请求有错误`，常用404(意味着你请求的资源在web服务器中没有)403(服务器拒绝访问，权限不够)401(未授权，请求要求用户的身份验证)
+- 500~599：`服务器端出现错误`，常用500
 
 ## 1.4. 不同类型的请求及作用
 CRUD: Create-POST/Retrieve-GET/Update-PUT/Delete-DELETE
@@ -103,8 +103,7 @@ MDN：https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest
 ## 3.2. 区别一般 http 请求与 ajax 请求
 - ajax 请求是一种特别的 http 请求
 - 对服务器端来说, 没有任何区别, 区别在浏览器端的收发都不一样
-- 浏览器端发请求: 只有 XHR 或 fetch 发出的才是 ajax 请求, 其它所有的都是
-非 ajax 请求
+- 浏览器端发请求: 只有 XHR 或 fetch 发出的才是 ajax 请求, 其它所有的都是非 ajax 请求
 - 浏览器端接收到响应
   + 一般请求: 浏览器一般会直接显示响应体数据, 也就是我们常说的刷新/
 跳转页面
@@ -133,7 +132,64 @@ MDN：https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest
 14. getResponseHeader(name): 根据请求头的名字，获取指定的值
 15. getAllResponseHeaders(): 获取所有响应头组成的字符串
 16. setRequestHeader(name, value): 设置请求头
-
+## xhr level2
+XMLHttpRequest Level 2相较于老版本新增如下内容:
+### 设置HTTP请求的超时时间xhr.timeout
+```js
+let xhr = new XMLttpRequest()
+xhr.open('GET','/api/hello')
+xhr.timeout = 2000 // 超时时间，单位毫秒
+xhr.ontimeout = function (e) {
+  // 超时处理
+}
+xhr.send()
+```
+### 通过FormData发送表单数据
+new FormData()
+```js
+let xhr = new XMLttpRequest()
+let formData = new FormData()
+formData.append('username','olivia')
+formData.append('gender','female')
+xhr.open('POST','/api/hello')
+xhr.send(formData)
+```
+### 可以上传文件
+```
+<input type="file" name="uploadFile" id="upoad-file"/>
+document.getElementById("upload-file").addEventListener('change', function(){
+    formData.append('uploadFile', this.file[0])
+    xhr.send(formData)
+})
+```
+### 支持跨域请求
+### 获取服务器端的二进制数据
+- 一种是使用` overrideMimeType `方法覆写服务器指定的 MIME 类型，从而改变浏览器解析数据的方式。xhr.overrideMimeType(mimeType)
+```js
+// 告诉浏览器，服务器响应的内容是用户自定义的字符集
+xhr.overrideMimeType('text/plain; charset=x-user-defined')
+// 浏览器就会将服务器返回的二进制数据当成文本处理，我们需要做进一步的转换才能拿到真实的数据：
+// 获取二进制数据的第 i 位的值
+var byte = xhr.responseText.charCodeAt(i) & 0xff
+```
+- `xhr.responseType` 用于设置服务器返回的数据的类型
+```js
+xhr.responseType = 'arraybuffer'
+xhr.onload = function () {
+  var arrayBuffer = oReq.response
+  // 接下来对 arrayBuffer 做进一步处理...
+}
+```
+### 获得数据传输的进度信息
+| 事件 | 描述 |
+| ---- | ---- |
+| onloadstart | 获取数据开始 |
+| onprogress | 数据传输的过程中 |
+| onabort | 数据获取被取消 |
+| onerror | 获取数据错误 |
+| onload | 获取数据成功 |
+| ontimeout | 获取数据超时 |
+| onloadend | 获取完成（无论失败或成功） |
 # 4. XHR 的 ajax 封装(简单版 axios)
 - test: 02xhr.html
 特点： 

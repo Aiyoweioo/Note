@@ -996,6 +996,9 @@ hook.callPromise("Olivia").then(()=> {
 ```
 
 # 2. 导入自定义loader
+自定义实现loader:
+- 无状态：Loader 中不应该保留或依赖状态，Loader 运行时和其他模块、其他 Loader 之间应该保持相对独立
+- 绝对路径：Loader 中不能出现绝对路径，`loader-utils` 里有一个 `stringifyRequest `方法，它可以把绝对路径转化为相对路径
 方式一
 ```js
 {
@@ -1170,6 +1173,7 @@ loader2.pitch = function () {
 ```
 
 # 4. 自定义实现babel-loader
+
 - npm install @babel/core @babel/preset-env loader-utils
 loader-utils是loader的工具类
 ```js
@@ -1382,7 +1386,12 @@ module.exports = loader
     use: ['style-loader', 'css-loader', 'less-loader']
 }
 ```
-# 8. Plugins顺序
+# 8. 自定义Plugins和Plugins顺序
+- 自定义Plugins
+  1. 定义一个Plugin类
+  2. 函数内定义一个apply(compiler)方法，里面注入compiler实例，事件钩子名称、插件名称、回调函数
+  3. 在回调函数中通过注入的参数，读取或操纵修改 Webpack 内部实例数据。
+  4. 异步钩子操作完成后，调用callback方法
 看node_modules/webpack/Compiler.js里面的class Compiler extends Tapable{}，里面包含hooks监听的各种事件
 先按照webpack.config.js的编写顺序完成同步，再按照hooks的顺序再完成异步。
 - webpack.config.js
@@ -1395,8 +1404,10 @@ module.exports = loader
 - DonePlugin:同步编译完成
 ```js
 class DonePlugins {
+  // apply方法，第一个参数为注入的compiler实例
   apply (compiler) {
     console.log("DonePlugins")
+    // 注册compiler的done钩子，这是一个同步钩子，回调中会注入done实例
     compiler.hooks.done.tap('DonePlugin', (status) => {
       console.log("编译完成")
     })
@@ -1408,11 +1419,14 @@ module.exports = DonePlugins
 - AsyncPlugins：异步发射
 ```js
 class AsyncPlugins {
+    // apply方法，第一个参数为注入的compiler实例
   apply (compiler) { // 绑定发射的钩子
     console.log("AsyncPlugins")
+    // 注册compiler的emit钩子，这是一个异步钩子，回调中会注入compliation实例
     compiler.hooks.emit.tapAsync('AsyncPlugins', (compliation, callback) => {
       setTimeout(() => {
         console.log("使用tapAsync文件发射,等一秒")
+        // 异步钩子操作完成后，调用callback方法
         callback()
       }, 1000)
     })
